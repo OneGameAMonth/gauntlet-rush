@@ -1,5 +1,6 @@
 package Areas 
 {
+	import Entities.Octorok;
 	import Entities.Player;
 	import Entities.Tile;
 	import flash.display.Bitmap;
@@ -46,6 +47,7 @@ package Areas
 			entities = [];
 			entities.push(new Player(32, 32));
 			playerIndex = 0;
+			entities.push(new Octorok(96, 96));
 		}
 		
 		public function Render():void
@@ -87,22 +89,33 @@ package Areas
 		
 		public function PlayerInput(player:Player):void
 		{
-			var p_speed:Number = player.topspeed;
-			if (Global.CheckKeyDown(Global.P_RIGHT)){
-				player.facing = Global.RIGHT;
-				player.vel.x = p_speed;
-			}else if (Global.CheckKeyDown(Global.P_LEFT)){
-				player.facing = Global.LEFT;
-				player.vel.x = -p_speed;
-			}else player.vel.x = 0;
-			
-			if (Global.CheckKeyDown(Global.P_DOWN)){
-				player.facing = Global.DOWN;
-				player.vel.y = p_speed;
-			}else if (Global.CheckKeyDown(Global.P_UP)){
-				player.facing = Global.UP;
-				player.vel.y = -p_speed;
-			}else player.vel.y = 0;
+			if (Global.CheckKeyPressed(Global.P_X_KEY) && player.state == player.NORMAL){
+				if ((player.vel.x != 0 || player.vel.y != 0) && player.rollRest <= 0){
+					player.vel.x *= 2;
+					player.vel.y *= 2;
+					player.state = player.ROLL_ATTACK;
+					player.currFrame = 0;
+					player.frameCount = 0;
+				}
+			}
+			if (player.state != player.ROLL_ATTACK && player.rest <= 0){
+				var p_speed:Number = player.topspeed;
+				if (Global.CheckKeyDown(Global.P_RIGHT)){
+					player.facing = Global.RIGHT;
+					player.vel.x = p_speed;
+				}else if (Global.CheckKeyDown(Global.P_LEFT)){
+					player.facing = Global.LEFT;
+					player.vel.x = -p_speed;
+				}else player.vel.x = 0;
+				
+				if (Global.CheckKeyDown(Global.P_DOWN)){
+					player.facing = Global.DOWN;
+					player.vel.y = p_speed;
+				}else if (Global.CheckKeyDown(Global.P_UP)){
+					player.facing = Global.UP;
+					player.vel.y = -p_speed;
+				}else player.vel.y = 0;
+			}
 		}
 		
 		public function UpdateView(player:Player):void

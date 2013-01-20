@@ -28,6 +28,7 @@ package
 			
 			Global.keys_down = new Array();
 			Global.keys_up = new Array();
+			Global.keys_pressed = new Array();
 			Global.CreateLetterDictionary();
 			
 			//add keyListeners

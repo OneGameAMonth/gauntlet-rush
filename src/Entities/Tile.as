@@ -1,5 +1,6 @@
 package Entities 
 {
+	import Entities.Parents.GameObject;
 	
 	public class Tile extends GameObject
 	{
