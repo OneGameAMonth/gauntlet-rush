@@ -1,7 +1,11 @@
 package Areas 
 {
+	
 	import Entities.Octorok;
+	import Entities.EnemyDie;
+	import Entities.Parents.Enemy;
 	import Entities.Player;
+	import Entities.PlayerSword;
 	import Entities.Tile;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -9,6 +13,7 @@ package Areas
 	import flash.geom.Rectangle;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import flash.utils.*;
 	
 	public class Area 
 	{	
@@ -48,6 +53,7 @@ package Areas
 			entities.push(new Player(32, 32));
 			playerIndex = 0;
 			entities.push(new Octorok(96, 96));
+			entities.push(new Octorok(224, 128));
 		}
 		
 		public function Render():void
@@ -81,15 +87,31 @@ package Areas
 		public function Update():void
 		{
 			if (playerIndex >= 0) PlayerInput(entities[playerIndex]);
-			for (var i:int = 0; i < entities.length; i++){
+			playerIndex = -1;
+			for (var i:int = entities.length-1; i >= 0; i--){
 				entities[i].Update(entities, map);
+				if (entities[i].delete_me){
+					if (entities[i] is Enemy)
+						entities.push(new EnemyDie(entities[i].x, entities[i].y));
+					entities.splice(i, 1);
+				}
+				if (getQualifiedClassName(entities[i]) == "Entities::Player") playerIndex = i;
 			}
 			if (playerIndex >= 0) UpdateView(entities[playerIndex]);
 		}
 		
 		public function PlayerInput(player:Player):void
 		{
-			if (Global.CheckKeyPressed(Global.P_X_KEY) && player.state == player.NORMAL){
+			if (player.rest > 0) return;
+			if (Global.CheckKeyPressed(Global.P_Z_KEY) && player.state == player.NORMAL){
+				player.vel.x = 0;
+				player.vel.y = 0;
+				player.state = player.SWORD_ATTACK;
+				player.currFrame = 0;
+				player.frameCount = 0;
+				player.rest = 1;
+				entities.push(new PlayerSword(player.x-16, player.y-16, player.facing));
+			}if (Global.CheckKeyPressed(Global.P_X_KEY) && player.state == player.NORMAL){
 				if ((player.vel.x != 0 || player.vel.y != 0) && player.rollRest <= 0){
 					player.vel.x *= 2;
 					player.vel.y *= 2;
@@ -97,8 +119,7 @@ package Areas
 					player.currFrame = 0;
 					player.frameCount = 0;
 				}
-			}
-			if (player.state != player.ROLL_ATTACK && player.rest <= 0){
+			}if (player.state == player.NORMAL){
 				var p_speed:Number = player.topspeed;
 				if (Global.CheckKeyDown(Global.P_RIGHT)){
 					player.facing = Global.RIGHT;

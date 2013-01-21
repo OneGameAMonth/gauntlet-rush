@@ -12,6 +12,8 @@ package Entities.Parents
 		public var bb:int;
 		public var solid:Boolean;
 		
+		public var delete_me:Boolean;
+		
 		public function GameObject(x:Number, y:Number, lb:int, tb:int, rb:int, bb:int)
 		{
 			this.x = x;
@@ -23,6 +25,7 @@ package Entities.Parents
 			
 			//assume object is solid at first (this will be th eclass used for solids??
 			solid = true;
+			delete_me = false;
 		}
 		
 		public function CheckRectIntersect(obj2:GameObject, lb:int, 

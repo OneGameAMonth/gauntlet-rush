@@ -9,7 +9,8 @@ package Entities
 		
 		public var state:int;
 		public const NORMAL:int = 0;
-		public const ROLL_ATTACK:int = 1;
+		public const SWORD_ATTACK:int = 1;
+		public const ROLL_ATTACK:int = 2;
 		
 		[Embed(source = '../resources/images/player_sheet.png')]
 		private var my_sprite_sheet:Class;
@@ -24,16 +25,7 @@ package Entities
 		
 		public function Update(entities:Array, map:Array):void
 		{
-			var solids:Array = [];
-			var i:int;
-			for (i = 0; i < map.length; i++){
-				for (var j:int = 0; j < map[i].length; j++){
-					if (map[i][j].solid) solids.push(map[i][j]);
-				}
-			}for (i = 0; i < entities.length; i++){
-				if (entities[i].solid) solids.push(entities[i]);
-			}
-			UpdateMovement(solids);
+			UpdateMovement(entities, map);
 			
 			if (state == ROLL_ATTACK){
 				if (hitSomething){
@@ -71,6 +63,12 @@ package Entities
 				maxFrame = 4;
 				frameDelay = 3;
 				rollRest = 5;
+			}
+			else if (state == SWORD_ATTACK){
+				currAniX = 2;
+				maxFrame = 1;
+				frameDelay = 7;
+				rest = 1;
 			}
 			
 			if (++frameCount >= frameDelay){

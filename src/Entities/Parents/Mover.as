@@ -18,22 +18,24 @@ package Entities.Parents
 			hitSomething = false;
 		}
 		
-		public function UpdateMovement(solids:Array = null):void
+		public function UpdateMovement(entities:Array, map:Array):void
 		{
+			var solids:Array = [];
+			var i:int;
+			for (i = 0; i < map.length; i++){
+				for (var j:int = 0; j < map[i].length; j++){
+					if (map[i][j].solid) solids.push(map[i][j]);
+				}
+			}for (i = 0; i < entities.length; i++){
+				if (entities[i].solid) solids.push(entities[i]);
+			}
+			
 			//Update movement
-			var dilation:Number = 1;
-			if (vel.x != 0 && vel.y != 0){
-				vel.x *= 0.71;
-				vel.y *= 0.71;
-				dilation = 0.71;
-			}if (solids != null)
+			if (solids.length > 0)
 				CollideWithSolids(solids);
 			else{
-				x += vel.x;
 				y += vel.y;
-			}if (dilation != 1){
-				vel.x /= dilation;
-				vel.y /= dilation;
+				if (vel.y == 0) x += vel.x;
 			}
 		}
 		
@@ -41,24 +43,6 @@ package Entities.Parents
 		{
 			hitSomething = false;
 			var i:int;
-			for (i = 0; i < solids.length; i++){
-				//horizontal solid collisions (LEFT)
-				if (CheckRectIntersect(solids[i], x+lb+vel.x, y+tb, x+lb, y+bb)){
-					vel.x = 0;
-					hitSomething = true;
-					while (!CheckRectIntersect(solids[i], x+lb-1, y+tb, x+lb, y+bb))
-						x--;
-				}
-				//horizontal solid collisions (RIGHT)
-				if (CheckRectIntersect(solids[i], x+rb, y+tb, x+rb+vel.x, y+bb)){
-					vel.x = 0;
-					hitSomething = true;
-					while (!CheckRectIntersect(solids[i], x+rb, y+tb, x+rb+1, y+bb))
-						x++;
-				}
-			}
-			x += vel.x;
-				
 			for (i = 0; i < solids.length; i++){
 				//vertical solid collisions (TOP)
 				if (CheckRectIntersect(solids[i], x+lb, y+tb+vel.y, x+rb, y+tb)){
@@ -76,6 +60,25 @@ package Entities.Parents
 				}
 			}
 			y += vel.y;
+			
+			if (vel.y != 0) return;
+			for (i = 0; i < solids.length; i++){
+				//horizontal solid collisions (LEFT)
+				if (CheckRectIntersect(solids[i], x+lb+vel.x, y+tb, x+lb, y+bb)){
+					vel.x = 0;
+					hitSomething = true;
+					while (!CheckRectIntersect(solids[i], x+lb-1, y+tb, x+lb, y+bb))
+						x--;
+				}
+				//horizontal solid collisions (RIGHT)
+				if (CheckRectIntersect(solids[i], x+rb, y+tb, x+rb+vel.x, y+bb)){
+					vel.x = 0;
+					hitSomething = true;
+					while (!CheckRectIntersect(solids[i], x+rb, y+tb, x+rb+1, y+bb))
+						x++;
+				}
+			}
+			x += vel.x;
 		}
 		
 		override public function UpdateAnimation():void

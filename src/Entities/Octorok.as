@@ -16,16 +16,12 @@ package Entities
 		
 		public function Update(entities:Array, map:Array):void
 		{
-			var solids:Array = [];
-			var i:int;
-			for (i = 0; i < map.length; i++){
-				for (var j:int = 0; j < map[i].length; j++){
-					if (map[i][j].solid) solids.push(map[i][j]);
-				}
-			}for (i = 0; i < entities.length; i++){
-				if (entities[i].solid) solids.push(entities[i]);
+			if (hp <= 0){
+				delete_me = true;
+				return;
 			}
-			UpdateMovement(solids);			
+			UpdateMovement(entities, map);			
+			invincibility -= 1;
 			super.UpdateAnimation();
 		}
 	}
