@@ -26,7 +26,7 @@ package Entities
 		
 		public function Player(x:int, y:int)
 		{
-			super(x, y, 2, 2, 14, 14);
+			super(x, y, 0, 0, 16, 16);
 			hp = 3;
 			hurt = 0;
 			invincibility = 0;

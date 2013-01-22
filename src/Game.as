@@ -5,14 +5,15 @@ package
 	import flash.events.KeyboardEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
-	import Areas.Area;
+	import Areas.*;
 	
 	public class Game 
 	{	
 		public var screenBitmap:Bitmap;
 		public static var Screen:BitmapData;
 		
-		public var area:Area;
+		public var roomArray:Array;
+		public static var roomIndex:int;
 		
 		public function Game() 
 		{
@@ -20,19 +21,21 @@ package
 			Screen = new BitmapData(Global.stageWidth*Global.zoom, Global.stageHeight*Global.zoom, false, 0x000000);
 			screenBitmap = new Bitmap(Screen);
 			
-			area = new Area(320, 240, 0);
+			roomArray = [];
+			roomArray.push(new Room01());
+			roomIndex = 0;
 		}
 		
 		public function Render():void
 		{
 			Screen.lock();
-			area.Render();
+			roomArray[roomIndex].Render();
 			Screen.unlock();
 		}
 		
 		public function Update():void
 		{
-			area.Update();
+			roomArray[roomIndex].Update();
 			
 			//clear out the "keys_up" array for next update
 			Global.keys_up = new Array();
