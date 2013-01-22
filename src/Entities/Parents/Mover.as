@@ -18,7 +18,7 @@ package Entities.Parents
 			hitSomething = false;
 		}
 		
-		public function UpdateMovement(entities:Array, map:Array):void
+		public function UpdateMovement(entities:Array, map:Array, keepMoving:Boolean = false):void
 		{
 			var solids:Array = [];
 			var i:int;
@@ -32,7 +32,7 @@ package Entities.Parents
 			
 			//Update movement
 			if (solids.length > 0)
-				CollideWithSolids(solids);
+				CollideWithSolids(solids, keepMoving);
 			else{
 				y += vel.y;
 				if (vel.y == 0) x += vel.x;
@@ -47,13 +47,17 @@ package Entities.Parents
 			else if (vel.x < 0) facing = Global.LEFT;
 		}
 		
-		public function CollideWithSolids(solids:Array):void
+		public function CollideWithSolids(solids:Array, keepMoving:Boolean):void
 		{
 			hitSomething = false;
 			var i:int;
 			for (i = 0; i < solids.length; i++){
 				//vertical solid collisions (TOP)
 				if (CheckRectIntersect(solids[i], x+lb, y+tb+vel.y, x+rb, y+tb)){
+					if (keepMoving){ 
+						vel.y *= -1;
+						continue;
+					}
 					vel.y = 0;
 					hitSomething = true;
 					while (!CheckRectIntersect(solids[i], x+lb, y+tb-1, x+rb, y+tb))
@@ -61,6 +65,10 @@ package Entities.Parents
 				}
 				//vertical solid collisions (BOTTOM)
 				if (CheckRectIntersect(solids[i], x+lb, y+bb, x+rb, y+bb+vel.y)){
+					if (keepMoving){ 
+						vel.y *= -1;
+						continue;
+					}
 					vel.y = 0;
 					hitSomething = true;
 					while (!CheckRectIntersect(solids[i], x+lb, y+bb, x+rb, y+bb+1))
@@ -73,6 +81,10 @@ package Entities.Parents
 			for (i = 0; i < solids.length; i++){
 				//horizontal solid collisions (LEFT)
 				if (CheckRectIntersect(solids[i], x+lb+vel.x, y+tb, x+lb, y+bb)){
+					if (keepMoving){ 
+						vel.x *= -1;
+						continue;
+					}
 					vel.x = 0;
 					hitSomething = true;
 					while (!CheckRectIntersect(solids[i], x+lb-1, y+tb, x+lb, y+bb))
@@ -80,6 +92,10 @@ package Entities.Parents
 				}
 				//horizontal solid collisions (RIGHT)
 				if (CheckRectIntersect(solids[i], x+rb, y+tb, x+rb+vel.x, y+bb)){
+					if (keepMoving){ 
+						vel.x *= -1;
+						continue;
+					}
 					vel.x = 0;
 					hitSomething = true;
 					while (!CheckRectIntersect(solids[i], x+rb, y+tb, x+rb+1, y+bb))

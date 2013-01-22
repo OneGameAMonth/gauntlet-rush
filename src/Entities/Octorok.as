@@ -32,7 +32,7 @@ package Entities
 			super.UpdateAnimation();
 		}
 		
-		override public function UpdateMovement(entities:Array, map:Array):void
+		override public function UpdateMovement(entities:Array, map:Array, keepMoving:Boolean = false):void
 		{
 			randTimer--;
 			if (randTimer <= 0){
@@ -60,7 +60,7 @@ package Entities
 					randTimer = Math.floor(Math.random()*8)+8;
 				}
 			}
-			super.UpdateMovement(entities, map);
+			super.UpdateMovement(entities, map, true);
 		}
 	}
 }
