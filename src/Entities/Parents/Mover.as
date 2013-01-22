@@ -39,6 +39,14 @@ package Entities.Parents
 			}
 		}
 		
+		public function UpdateFacingWithVelocity():void
+		{
+			if (vel.y > 0) facing = Global.DOWN;
+			else if (vel.y < 0) facing = Global.UP;
+			else if (vel.x > 0) facing = Global.RIGHT;
+			else if (vel.x < 0) facing = Global.LEFT;
+		}
+		
 		public function CollideWithSolids(solids:Array):void
 		{
 			hitSomething = false;

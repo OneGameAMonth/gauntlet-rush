@@ -4,6 +4,7 @@ package Areas
 	import Entities.Octorok;
 	import Entities.EnemyDie;
 	import Entities.Parents.Enemy;
+	import Entities.Parents.Projectile;
 	import Entities.Player;
 	import Entities.PlayerSword;
 	import Entities.Tile;
@@ -73,7 +74,7 @@ package Areas
 						new Rectangle(sprite_x, sprite_y, 16, 16),
 						new Point(draw_x, draw_y));
 				}
-			}for(i = 0; i < entities.length; i++){
+			}for(i = entities.length-1; i >= 0; i--){
 				entities[i].Render(LevelRenderer);
 			}
 			
@@ -91,7 +92,7 @@ package Areas
 			for (var i:int = entities.length-1; i >= 0; i--){
 				entities[i].Update(entities, map);
 				if (entities[i].delete_me){
-					if (entities[i] is Enemy)
+					if (entities[i] is Enemy || entities[i] is Projectile)
 						entities.push(new EnemyDie(entities[i].x, entities[i].y));
 					entities.splice(i, 1);
 				}

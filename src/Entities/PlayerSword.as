@@ -57,11 +57,11 @@ package Entities
 						delete_me = true;
 						return;
 					}
-				}else if (entities[i] is Enemy){
+				}else if (entities[i] is Enemy && entities[i].canBeHurt){
 					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb) && 
 							entities[i].invincibility <= 0){
 						entities[i].hp -= 1;
-						entities[i].invincibility = 5;
+						entities[i].invincibility = 15;
 					}
 				}
 			}
