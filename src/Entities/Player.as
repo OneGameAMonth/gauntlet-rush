@@ -115,6 +115,8 @@ package Entities
 				state = HURT_BOUNCE;
 				hurt = 7;
 				invincibility = 20;
+				vel.x = 0;
+				vel.y = 0;
 				var ex:Number = enemy.x;
 				var ey:Number = enemy.y;
 				if (Math.abs(ex-x) > Math.abs(ey-y)){

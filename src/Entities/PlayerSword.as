@@ -1,6 +1,6 @@
 package Entities 
 {
-	import Entities.Parents.GameSprite;
+	import Entities.Parents.Mover;
 	import Entities.Parents.Enemy;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -10,17 +10,20 @@ package Entities
 	import flash.geom.Point;
 	import flash.utils.*;
 	
-	public class PlayerSword extends GameSprite
+	public class PlayerSword extends Mover
 	{
 		[Embed(source = '../resources/images/sword_sheet.png')]
 		private var my_sprite_sheet:Class;
 		
-		public function PlayerSword(x:Number, y:Number, facing:int) 
+		public function PlayerSword(x:Number, y:Number, facing:int, vel:Point) 
 		{
 			super(x, y, 0, 0, 0, 0);
 			frameWidth = 48;
 			frameHeight = 48;
 			sprite_sheet = my_sprite_sheet;
+			this.facing = facing;
+			this.vel = vel;
+			solid = false;
 			
 			if (facing == Global.DOWN){
 				lb = 23;
@@ -60,11 +63,12 @@ package Entities
 				}else if (entities[i] is Enemy && entities[i].canBeHurt){
 					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb) && 
 							entities[i].invincibility <= 0){
-						entities[i].hp -= 1;
-						entities[i].invincibility = 15;
+						entities[i].GetHurtByObject(this);
 					}
 				}
 			}
+			
+			UpdateMovement(entities, map);
 		}
 	}
 }

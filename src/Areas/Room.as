@@ -28,6 +28,9 @@ package Areas
 		public var entities:Array;
 		public var playerIndex:int = -1;
 		
+		public var enemyCount:int = 0;
+		public var portcullisIndex:int = -1;
+		
 		public function Room(width:int, height:int, id:int)
 		{
 			LevelRenderer = new BitmapData(width, height, false, 0x000000);
@@ -51,6 +54,7 @@ package Areas
 			
 			entities = [];
 			entities.push(new Portcullis(6*16, 0, 0));
+			portcullisIndex = entities.length-1;
 			entities.push(new Portcullis(6*16, (height/16-1)*16, 1));
 		}
 		
@@ -86,11 +90,17 @@ package Areas
 		{
 			if (playerIndex >= 0) PlayerInput(entities[playerIndex]);
 			playerIndex = -1;
+			if (enemyCount <= 0 && portcullisIndex >= 0){
+				entities.splice(portcullisIndex, 1);
+				portcullisIndex = -1;
+			}
 			for (var i:int = entities.length-1; i >= 0; i--){
 				entities[i].Update(entities, map);
 				if (entities[i].delete_me){
-					if (entities[i] is Enemy || entities[i] is Projectile)
+					if (entities[i] is Enemy || entities[i] is Projectile){
 						entities.push(new EnemyDie(entities[i].x, entities[i].y));
+						if (entities[i] is Enemy) enemyCount--;
+					}
 					entities.splice(i, 1);
 				}
 				if (getQualifiedClassName(entities[i]) == "Entities::Player") playerIndex = i;
@@ -100,15 +110,21 @@ package Areas
 		
 		public function PlayerInput(player:Player):void
 		{
-			if (player.rest > 0) return;
-			if (Global.CheckKeyPressed(Global.P_Z_KEY) && player.state == player.NORMAL){
-				player.vel.x = 0;
-				player.vel.y = 0;
-				player.state = player.SWORD_ATTACK;
+			if (player.rest > 0 || player.state == player.HURT_BOUNCE) return;
+			if (Global.CheckKeyPressed(Global.P_Z_KEY)){
+				if (player.state == player.NORMAL){
+					player.vel.x = 0;
+					player.vel.y = 0;
+				}else if (player.state == player.ROLL_ATTACK){
+					player.vel.x *= 1.5;
+					player.vel.y *= 1.5;
+				}
 				player.currFrame = 0;
 				player.frameCount = 0;
 				player.rest = 1;
-				entities.push(new PlayerSword(player.x-16, player.y-16, player.facing));
+				entities.push(
+					new PlayerSword(player.x-16, player.y-16, player.facing, player.vel));
+				player.state = player.SWORD_ATTACK;
 			}if (Global.CheckKeyPressed(Global.P_X_KEY) && player.state == player.NORMAL){
 				if ((player.vel.x != 0 || player.vel.y != 0) && player.rollRest <= 0){
 					player.vel.x *= 2;

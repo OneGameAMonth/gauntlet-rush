@@ -12,11 +12,9 @@ package Areas
 			playerIndex = entities.length-1;
 			
 			//create enemies
-			entities.push(new Octorok(96, 96));
-			entities.push(new Octorok(224, 128));
-			entities.push(new Octorok(128, 64));
-			entities.push(new Octoturret(164, 84));
-			enemyCount = 4;
+			entities.push(new Octoturret(96, 96));
+			entities.push(new Octoturret(224, 128));
+			enemyCount = 2;
 		}		
 	}
 }
