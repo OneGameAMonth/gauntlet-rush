@@ -42,7 +42,7 @@ package Entities.Parents
 			image_sprite = new Sprite();
 		}
 		
-		public function Render(levelRenderer:BitmapData):void
+		override public function Render(levelRenderer:BitmapData):void
 		{
 			if (!visible) return;
 			

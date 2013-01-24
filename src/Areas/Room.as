@@ -1,12 +1,8 @@
 package Areas 
 {
-	import Entities.Portcullis;
-	import Entities.Player;
-	import Entities.EnemyDie;
+	import Entities.*;
 	import Entities.Parents.Enemy;
 	import Entities.Parents.Projectile;
-	import Entities.PlayerSword;
-	import Entities.Tile;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
@@ -20,6 +16,9 @@ package Areas
 		public var L_bitmap:Bitmap;
 		public var LevelRenderer:BitmapData;
 		public var _id:int;
+		
+		public var width:int;
+		public var height:int;
 		
 		[Embed(source = '../resources/images/tileset.png')]
 		protected var tile_set:Class;
@@ -36,6 +35,8 @@ package Areas
 			LevelRenderer = new BitmapData(width, height, false, 0x000000);
 			L_bitmap = new Bitmap(LevelRenderer);
 			_id = id;
+			this.width = width;
+			this.height = height;
 			
 			map = [];
 			for (var i:int = 0; i < height/16; i++){
@@ -51,11 +52,7 @@ package Areas
 				}
 				map.push(row);
 			}
-			
 			entities = [];
-			entities.push(new Portcullis(6*16, 0, 0));
-			portcullisIndex = entities.length-1;
-			entities.push(new Portcullis(6*16, (height/16-1)*16, 1));
 		}
 		
 		public function Render():void
@@ -91,6 +88,8 @@ package Areas
 			if (playerIndex >= 0) PlayerInput(entities[playerIndex]);
 			playerIndex = -1;
 			if (enemyCount <= 0 && portcullisIndex >= 0){
+				entities.push(new ToNextRoom(
+					entities[portcullisIndex].x, entities[portcullisIndex].y-16));
 				entities.splice(portcullisIndex, 1);
 				portcullisIndex = -1;
 			}
@@ -115,33 +114,29 @@ package Areas
 				if (player.state == player.NORMAL){
 					player.vel.x = 0;
 					player.vel.y = 0;
+					player.frameCount = 0;
 				}else if (player.state == player.ROLL_ATTACK){
 					player.vel.x *= 1.5;
 					player.vel.y *= 1.5;
+					player.frameCount = 1;
 				}
 				player.currFrame = 0;
-				player.frameCount = 0;
 				player.rest = 1;
 				entities.push(
-					new PlayerSword(player.x-16, player.y-16, player.facing, player.vel));
+					new PlayerSword(player.x-16, player.y-16, player.facing));
 				player.state = player.SWORD_ATTACK;
 			}if (Global.CheckKeyPressed(Global.P_X_KEY) && player.state == player.NORMAL){
 				if ((player.vel.x != 0 || player.vel.y != 0) && player.rollRest <= 0){
-					player.vel.x *= 2;
-					player.vel.y *= 2;
+					if (player.vel.x > 0) player.vel.x = 6;
+					else if (player.vel.x < 0) player.vel.x = -6;
+					if (player.vel.y > 0) player.vel.y = 6;
+					else if (player.vel.y < 0) player.vel.y = -6;
 					player.state = player.ROLL_ATTACK;
 					player.currFrame = 0;
 					player.frameCount = 0;
 				}
 			}if (player.state == player.NORMAL){
 				var p_speed:Number = player.topspeed;
-				if (Global.CheckKeyDown(Global.P_RIGHT)){
-					player.facing = Global.RIGHT;
-					player.vel.x = p_speed;
-				}else if (Global.CheckKeyDown(Global.P_LEFT)){
-					player.facing = Global.LEFT;
-					player.vel.x = -p_speed;
-				}else player.vel.x = 0;
 				
 				if (Global.CheckKeyDown(Global.P_DOWN)){
 					player.facing = Global.DOWN;
@@ -149,7 +144,17 @@ package Areas
 				}else if (Global.CheckKeyDown(Global.P_UP)){
 					player.facing = Global.UP;
 					player.vel.y = -p_speed;
-				}else player.vel.y = 0;
+				}
+				else{
+					player.vel.y = 0;
+					if (Global.CheckKeyDown(Global.P_RIGHT)){
+						player.facing = Global.RIGHT;
+						player.vel.x = p_speed;
+					}else if (Global.CheckKeyDown(Global.P_LEFT)){
+						player.facing = Global.LEFT;
+						player.vel.x = -p_speed;
+					}else player.vel.x = 0;
+				}
 			}
 		}
 		

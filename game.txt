@@ -3,14 +3,13 @@ To save on time, make the game short (ten areas?) But challenging (not nintendo 
 "If you truly love me, you must prove yourself worthy of my affection."
 "I must take this challenge and prove myself." for a girl it becomes increasingly evident that she has no interest in you
 
-0. If you make an area function to do all the interaction between entities, you can decrease it from n^3 to n^2 time. Keep an array of solid entities in area??
-
-1. Create door/portcullis for moving between rooms
-2. Create other monsters and set up the levels.
+0. Fix damage blinker to a color transform
+1. Make monsters have ATTACK strength attribute that is used to subtract from hero's health
+1. Create other monsters and set up the levels.
+2. Charge & spin.
 3. Boss(es, at most 2)
 4. HUD for health and points. Also institute point system.
-5. Roll & Leap stab. Charge & spin. Hold charge for longer for tornado spin.
-6. Add story opening, end, and between levels (zelda dialogue)
+5. Add story opening, end, and between levels (zelda dialogue)
 	
 http://www.zeldadungeon.net/Zelda01-the-legend-of-zelda-enemy-guide.php
 http://androidarts.com/console_games.htm

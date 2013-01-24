@@ -15,6 +15,7 @@ package Entities.Enemies
 			super(x, y, 0, 0, 16, 16);
 			sprite_sheet = my_sprite_sheet;
 			maxFrame = 2;
+			frameDelay = 5;
 			topspeed = 2.0;
 			randTimer = 0;
 			stopCounter = 0;

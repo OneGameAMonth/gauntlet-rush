@@ -28,7 +28,7 @@ package Entities.Parents
 			hurtAniX = currAniX;
 		}
 		
-		public function Update(entities:Array, map:Array):void
+		override public function Update(entities:Array, map:Array):void
 		{	
 			if (delete_me) return;
 			if (state == NORMAL){ 
@@ -74,7 +74,7 @@ package Entities.Parents
 		
 		override public function UpdateAnimation():void
 		{
-			if (state == HURT_BOUNCE) currAniX = hurtAniX;
+			if (invincibility > 0) currAniX = hurtAniX;
 			else currAniX = baseAniX;
 			super.UpdateAnimation();
 		}

@@ -15,7 +15,7 @@ package Entities
 			this.currAniY = currAniY;
 		}		
 		
-		public function Update(entities:Array, map:Array):void
+		override public function Update(entities:Array, map:Array):void
 		{
 		}
 	}

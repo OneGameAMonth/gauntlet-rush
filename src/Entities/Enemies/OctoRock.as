@@ -21,11 +21,21 @@ package Entities.Enemies
 			frameDelay = 3;
 		}
 		
-		public function Update(entities:Array, map:Array):void
+		override public function Update(entities:Array, map:Array):void
 		{
 			UpdateMovement(entities, map);
 			if (hitSomething) delete_me = true;
-			super.UpdateAnimation();
+			UpdateFacingWithVelocity();
+			UpdateAnimation();
+		}
+		
+		override public function UpdateAnimation():void
+		{
+			if (++frameCount >= frameDelay){
+				if (++currFrame >= maxFrame) 
+					currFrame = 0;
+				frameCount = 0;
+			}
 		}
 	}
 }

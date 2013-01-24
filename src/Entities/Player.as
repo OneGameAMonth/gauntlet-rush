@@ -6,7 +6,7 @@ package Entities
 	
 	public class Player extends Mover
 	{
-		public var hp:int;
+		public var hp:Number;
 		public var hurt:int;
 		public var invincibility:int;
 		public var rest:int;
@@ -26,22 +26,23 @@ package Entities
 		
 		public function Player(x:int, y:int)
 		{
-			super(x, y, 0, 0, 16, 16);
-			hp = 3;
+			super(x, y, 2, 2, 14, 14);
+			hp = 6;
 			hurt = 0;
 			invincibility = 0;
 			rest = 0;
 			rollRest = 0;
 			state = NORMAL;
+			facing = Global.UP;
 			sprite_sheet = my_sprite_sheet;
 		}
 		
-		public function Update(entities:Array, map:Array):void
+		override public function Update(entities:Array, map:Array):void
 		{
 			if (invincibility > 0) invincibility -= 1;
 			InteractWithEntities(entities);
 			UpdateMovement(entities, map);
-			if (state != HURT_BOUNCE) UpdateFacingWithVelocity();
+			if (state != HURT_BOUNCE && state != ROLL_ATTACK) UpdateFacingWithVelocity();
 			if (state == ROLL_ATTACK){
 				if (hitSomething){
 					state = NORMAL;
@@ -65,46 +66,78 @@ package Entities
 		
 		public function InteractWithEntities(entities:Array):void
 		{
+			if (invincibility > 0 || hurt > 0) return;
 			for (var i:int = 0; i < entities.length; i++){
-				if (entities[i] is Enemy){
-					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb)
-							&& invincibility <= 0 && hurt <= 0){
+				if (entities[i] is PlayerSword){
+					if (entities[i].hitEnemy){
+						if (vel.x != 0 || vel.y != 0){
+							vel.x *= -0.5;
+							vel.y *= -0.5;
+							state = ROLL_ATTACK;
+							currFrame = 1;
+							frameCount = 0;
+							entities[i].visible = false;
+							entities[i].delete_me = true;
+						}
+					}
+				}
+				else if (entities[i] is Enemy){
+					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb)){
+						if (entities[i].hurt <= 0 && entities[i].invincibility <= 0)
 						GetHurtByObject(entities[i]);
 						break;
 					}
 				}else if (entities[i] is Projectile){
 					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb)){
-						var ex:Number = entities[i].x;
-						var ey:Number = entities[i].y;
-						var killProjectile:Boolean = false;
-						if (Math.abs(ex-x) > Math.abs(ey-y)){
-							if (ex > x && facing == Global.RIGHT){
-								entities[i].x += 10;
-								killProjectile = true;
-							}
-							else if (facing == Global.LEFT){
-								entities[i].x -= 10;
-								killProjectile = true;
-							}
-						}
-						else{
-							if (ey > y && facing == Global.DOWN){
-								entities[i].y += 10;
-								killProjectile = true;
-							}
-							else if (facing == Global.UP){
-								entities[i].y -= 10;
-								killProjectile = true;
-							}
-						}
 						entities[i].delete_me = true;
-						if (!killProjectile){
+						if (!TryToKillProjectile(entities[i]) || state != NORMAL){
 							GetHurtByObject(entities[i]);
 							break;
 						}
 					}
 				}
 			}
+		}
+		
+		public function TryToKillProjectile(projectile:Projectile):Boolean
+		{
+			if (!projectile.diagonal){
+				if (projectile.facing == Global.LEFT && facing == Global.RIGHT){
+					projectile.x += 10;
+					return true;
+				}if (projectile.facing == Global.RIGHT && facing == Global.LEFT){
+					projectile.x -= 10;
+					return true;
+				}if (projectile.facing == Global.UP && facing == Global.DOWN){
+					projectile.y += 10;
+					return true;
+				}if (projectile.facing == Global.DOWN && facing == Global.UP){
+					projectile.y -= 10;
+					return true;
+				}
+				return false;
+			}
+			
+			if (Math.abs(projectile.x-x) > Math.abs(projectile.y-y)){
+				if (projectile.x > x && facing == Global.RIGHT){
+					projectile.x += 10;
+					return true;
+				}
+				else if (projectile.x < x && facing == Global.LEFT){
+					projectile.x -= 10;
+					return true;
+				}
+			}
+			else{
+				if (projectile.y > y && facing == Global.DOWN){
+					projectile.y += 10;
+					return true;
+				}
+				else if (projectile.y < y && facing == Global.UP){
+					projectile.y -= 10;
+					return true;
+				}
+			}return false;
 		}
 		
 		public function GetHurtByObject(enemy:Mover):void

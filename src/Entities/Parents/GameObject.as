@@ -1,6 +1,7 @@
 package Entities.Parents 
 {
-
+	import flash.display.BitmapData;
+	
 	public class GameObject 
 	{
 		public var x:Number;
@@ -26,6 +27,14 @@ package Entities.Parents
 			//assume object is solid at first (this will be th eclass used for solids??
 			solid = true;
 			delete_me = false;
+		}
+		
+		public function Render(levelRenderer:BitmapData):void
+		{
+		}
+		
+		public function Update(entities:Array, map:Array):void
+		{
 		}
 		
 		public function CheckRectIntersect(obj2:GameObject, lb:int, 

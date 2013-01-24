@@ -15,7 +15,7 @@ package Entities
 			sprite_sheet = my_sprite_sheet;
 		}
 		
-		public function Update(entities:Array, map:Array):void
+		override public function Update(entities:Array, map:Array):void
 		{
 			UpdateAnimation();
 			if (currFrame == 0 && frameCount == 0) delete_me = true;

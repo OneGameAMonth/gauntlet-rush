@@ -23,6 +23,8 @@ package
 			
 			roomArray = [];
 			roomArray.push(new Room01());
+			roomArray.push(new Room02());
+			roomArray.push(new Room03());
 			roomIndex = 0;
 		}
 		
