@@ -3,6 +3,7 @@ package Entities
 	import Entities.Parents.LifeForm;
 	import Entities.Parents.Mover;
 	import Entities.Parents.Enemy;
+	import Entities.Enemies.Bubble;
 	import Entities.Parents.Projectile;
 	
 	public class Player extends LifeForm
@@ -11,6 +12,7 @@ package Entities
 		public var rollRest:int;
 		public var swordCharge:int;
 		public var spinSword:int;
+		public var noSwordCounter:int;
 		
 		public static const SWORD_ATTACK:int = 2;
 		public static const SPIN_SWORD_ATTACK:int = 3;
@@ -33,6 +35,7 @@ package Entities
 			rollRest = 0;
 			swordCharge = 0;
 			spinSword = 0;
+			noSwordCounter = 0;
 		}
 		
 		override public function Update(entities:Array, map:Array):void
@@ -40,6 +43,12 @@ package Entities
 			if (invincibility > 0) invincibility -= 1;
 			InteractWithEntities(entities);
 			UpdateMovement(entities, map);
+			
+			if (noSwordCounter > 0){
+				noSwordCounter--;
+				spinSword = 0;
+				swordCharge = 0;
+			}
 			if (state == NORMAL && swordCharge == 0) 
 				UpdateFacingWithVelocity();
 			if (state == ROLL_ATTACK){
@@ -153,6 +162,10 @@ package Entities
 				else{
 					if (ey > y) vel.y = -topspeed * 2;
 					else vel.y = topspeed * 2;
+				}
+				
+				if (object is Bubble){
+					noSwordCounter = 120;
 				}
 			}
 			else{

@@ -24,7 +24,7 @@ package Areas
 			entities.push(new Keese(32, height/2));
 			entities.push(new Keese(width/2, 32));
 			entities.push(new Keese(width-64, height/2));
-			enemyCount = 2;
+			enemyCount = 4;
 			
 			entities.push(new StoneStatue(16, 16, 0, 0));
 			entities.push(new StoneStatue(width-32, 16, 0, 1));

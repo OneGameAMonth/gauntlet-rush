@@ -116,6 +116,28 @@ package Entities.Enemies
 			UpdateAnimation();
 		}
 		
+		override public function UpdateMovement(entities:Array, map:Array, keepMoving:Boolean = false, diagonal:Boolean = false):void
+		{
+			var solids:Array = [];
+			var i:int;
+			for (i = 0; i < map.length; i++){
+				for (var j:int = 0; j < map[i].length; j++){
+					if (i != 0 && i != map.length-1 && j != 0 && j != map[i].length-1) continue;
+					if (map[i][j].solid) solids.push(map[i][j]);
+				}
+			}for (i = 0; i < entities.length; i++){
+				if (entities[i].solid) solids.push(entities[i]);
+			}
+			
+			//Update movement
+			if (solids.length > 0)
+				CollideWithSolids(solids, keepMoving, diagonal);
+			else{
+				y += vel.y;
+				if (vel.y == 0) x += vel.x;
+			}
+		}
+		
 		override public function UpdateAnimation():void
 		{
 			if (++frameCount >= frameDelay){

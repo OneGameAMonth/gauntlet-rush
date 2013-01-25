@@ -4,6 +4,7 @@ package Areas
 	import Entities.Portcullis;
 	import Entities.Player;
 	import Entities.Tile;
+	
 	public class Room03 extends Room
 	{
 		

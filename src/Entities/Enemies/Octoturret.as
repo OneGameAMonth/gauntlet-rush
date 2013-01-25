@@ -61,6 +61,7 @@ package Entities.Enemies
 					randTimer = Math.floor(Math.random()*8)+8;
 				}
 			}
+			if (state != HURT_BOUNCE) UpdateFacingWithVelocity();
 		}
 	}
 }

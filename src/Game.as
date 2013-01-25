@@ -25,7 +25,8 @@ package
 			roomArray.push(new Room01());
 			roomArray.push(new Room02());
 			roomArray.push(new Room03());
-			roomIndex = 0;
+			roomArray.push(new Room04());
+			roomIndex = 3;
 		}
 		
 		public function Render():void

@@ -7,12 +7,14 @@ package Entities.Parents
 		public var baseAniX:int;
 		public var hurtAniX:int;
 		public var atkPow:int;
+		public var canBeHurt:Boolean;
 		
 		public function Enemy(x:int, y:int, lb:int, tb:int, rb:int, bb:int) 
 		{
 			super(x, y, lb, tb, rb, bb);
 			
 			atkPow = 1;
+			canBeHurt = true;
 			baseAniX = currAniX;
 			hurtAniX = currAniX;
 		}
@@ -25,7 +27,6 @@ package Entities.Parents
 				UpdateMovement(entities, map, true);
 			}else UpdateMovement(entities, map);
 			
-			if (state != HURT_BOUNCE) UpdateFacingWithVelocity();
 			if (hurt > 0){
 				hurt--;
 				if (hurt <= 0){

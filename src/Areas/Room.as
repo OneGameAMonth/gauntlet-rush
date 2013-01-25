@@ -111,7 +111,7 @@ package Areas
 		public function PlayerInput(player:Player):void
 		{
 			if (player.rest > 0 || player.state == LifeForm.HURT_BOUNCE) return;
-			if (Global.CheckKeyPressed(Global.P_Z_KEY) && player.state != Player.SPIN_SWORD_ATTACK){
+			if (Global.CheckKeyPressed(Global.P_Z_KEY) && player.state != Player.SPIN_SWORD_ATTACK && player.noSwordCounter <= 0){
 				if (player.state == LifeForm.NORMAL){
 					player.vel.x = 0;
 					player.vel.y = 0;
@@ -128,7 +128,7 @@ package Areas
 				entities.push(
 					new PlayerSword(player.x-16, player.y-16, player.facing));
 				player.state = Player.SWORD_ATTACK;
-			}if (Global.CheckKeyDown(Global.P_Z_KEY) && player.swordCharge > 0){
+			}if (Global.CheckKeyDown(Global.P_Z_KEY) && player.swordCharge > 0  && player.noSwordCounter <= 0){
 				if (player.swordCharge < 60) player.swordCharge++;
 			}else if (player.state == LifeForm.NORMAL){
 				if (player.swordCharge >= 15){

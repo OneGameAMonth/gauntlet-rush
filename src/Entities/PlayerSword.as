@@ -54,7 +54,7 @@ package Entities
 						if (entities[i].swordCharge >= 15) maxFrame = 2;
 						else maxFrame = 1;
 					}
-				}else if (entities[i] is Enemy){
+				}else if (entities[i] is Enemy && entities[i].canBeHurt){
 					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb) && 
 							entities[i].invincibility <= 0){
 						entities[i].GetHurtByObject(this);
