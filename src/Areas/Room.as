@@ -1,6 +1,7 @@
 package Areas 
 {
 	import Entities.*;
+	import Entities.Parents.LifeForm;
 	import Entities.Parents.Enemy;
 	import Entities.Parents.Projectile;
 	import flash.display.Bitmap;
@@ -109,49 +110,74 @@ package Areas
 		
 		public function PlayerInput(player:Player):void
 		{
-			if (player.rest > 0 || player.state == player.HURT_BOUNCE) return;
-			if (Global.CheckKeyPressed(Global.P_Z_KEY)){
-				if (player.state == player.NORMAL){
+			if (player.rest > 0 || player.state == LifeForm.HURT_BOUNCE) return;
+			if (Global.CheckKeyPressed(Global.P_Z_KEY) && player.state != Player.SPIN_SWORD_ATTACK){
+				if (player.state == LifeForm.NORMAL){
 					player.vel.x = 0;
 					player.vel.y = 0;
 					player.frameCount = 0;
-				}else if (player.state == player.ROLL_ATTACK){
+				}else if (player.state == Player.ROLL_ATTACK){
+					if (player.currFrame < 2) return;
 					player.vel.x *= 1.5;
 					player.vel.y *= 1.5;
 					player.frameCount = 1;
 				}
+				player.swordCharge = 1;
 				player.currFrame = 0;
 				player.rest = 1;
 				entities.push(
 					new PlayerSword(player.x-16, player.y-16, player.facing));
-				player.state = player.SWORD_ATTACK;
-			}if (Global.CheckKeyPressed(Global.P_X_KEY) && player.state == player.NORMAL){
+				player.state = Player.SWORD_ATTACK;
+			}if (Global.CheckKeyDown(Global.P_Z_KEY) && player.swordCharge > 0){
+				if (player.swordCharge < 60) player.swordCharge++;
+			}else if (player.state == LifeForm.NORMAL){
+				if (player.swordCharge >= 15){
+					player.spinSword = 0;
+					player.state = Player.SPIN_SWORD_ATTACK;
+					player.vel.x = 0;
+					player.vel.y = 0;
+				}
+				player.swordCharge = 0;
+			}
+			if (Global.CheckKeyPressed(Global.P_X_KEY) && player.state == LifeForm.NORMAL){
 				if ((player.vel.x != 0 || player.vel.y != 0) && player.rollRest <= 0){
-					if (player.vel.x > 0) player.vel.x = 6;
-					else if (player.vel.x < 0) player.vel.x = -6;
-					if (player.vel.y > 0) player.vel.y = 6;
-					else if (player.vel.y < 0) player.vel.y = -6;
-					player.state = player.ROLL_ATTACK;
+					var rollVert:Boolean, rollHor:Boolean;
+					rollHor = (player.swordCharge <= 0 || (player.facing != Global.LEFT && player.facing != Global.RIGHT));
+					rollVert = (player.swordCharge <= 0 || (player.facing != Global.UP && player.facing != Global.DOWN));
+					if (player.vel.x > 0 && rollHor) player.vel.x = 6;
+					else if (player.vel.x < 0 && rollHor) player.vel.x = -6;
+					if (player.vel.y > 0 && rollVert) player.vel.y = 6;
+					else if (player.vel.y < 0 && rollVert) player.vel.y = -6;
+					
+					if (Math.abs(player.vel.y) != 6 && Math.abs(player.vel.x) != 6) return;
+					player.state = Player.ROLL_ATTACK;
 					player.currFrame = 0;
 					player.frameCount = 0;
 				}
-			}if (player.state == player.NORMAL){
+			}if (player.state == LifeForm.NORMAL || player.state == Player.SPIN_SWORD_ATTACK){
 				var p_speed:Number = player.topspeed;
+				if (player.state == Player.SPIN_SWORD_ATTACK) p_speed *= 1.5;
+				else if (player.swordCharge > 0) p_speed/=2;
+				var useSword:Boolean = (player.swordCharge > 0 || player.state == Player.SPIN_SWORD_ATTACK);
 				
 				if (Global.CheckKeyDown(Global.P_DOWN)){
-					player.facing = Global.DOWN;
+					if (!useSword) player.facing = Global.DOWN;
+					player.vel.x = 0;
 					player.vel.y = p_speed;
 				}else if (Global.CheckKeyDown(Global.P_UP)){
-					player.facing = Global.UP;
+					if (!useSword) player.facing = Global.UP;
+					player.vel.x = 0;
 					player.vel.y = -p_speed;
 				}
 				else{
 					player.vel.y = 0;
 					if (Global.CheckKeyDown(Global.P_RIGHT)){
-						player.facing = Global.RIGHT;
+						if (!useSword) player.facing = Global.RIGHT;
+						player.vel.y = 0;
 						player.vel.x = p_speed;
 					}else if (Global.CheckKeyDown(Global.P_LEFT)){
-						player.facing = Global.LEFT;
+						if (!useSword) player.facing = Global.LEFT;
+						player.vel.y = 0;
 						player.vel.x = -p_speed;
 					}else player.vel.x = 0;
 				}

@@ -1,22 +1,20 @@
 package Entities 
 {
+	import Entities.Parents.LifeForm;
 	import Entities.Parents.Mover;
 	import Entities.Parents.Enemy;
 	import Entities.Parents.Projectile;
 	
-	public class Player extends Mover
+	public class Player extends LifeForm
 	{
-		public var hp:Number;
-		public var hurt:int;
-		public var invincibility:int;
 		public var rest:int;
 		public var rollRest:int;
+		public var swordCharge:int;
+		public var spinSword:int;
 		
-		public var state:int;
-		public const NORMAL:int = 0;
-		public const SWORD_ATTACK:int = 1;
-		public const ROLL_ATTACK:int = 2;
-		public const HURT_BOUNCE:int = 3;
+		public static const SWORD_ATTACK:int = 2;
+		public static const SPIN_SWORD_ATTACK:int = 3;
+		public static const ROLL_ATTACK:int = 4;
 		
 		[Embed(source = '../resources/images/player_sheet.png')]
 		private var my_sprite_sheet:Class;
@@ -27,22 +25,23 @@ package Entities
 		public function Player(x:int, y:int)
 		{
 			super(x, y, 2, 2, 14, 14);
+			sprite_sheet = my_sprite_sheet;
+			facing = Global.UP;
 			hp = 6;
-			hurt = 0;
-			invincibility = 0;
+			
 			rest = 0;
 			rollRest = 0;
-			state = NORMAL;
-			facing = Global.UP;
-			sprite_sheet = my_sprite_sheet;
+			swordCharge = 0;
+			spinSword = 0;
 		}
 		
 		override public function Update(entities:Array, map:Array):void
-		{
+		{			
 			if (invincibility > 0) invincibility -= 1;
 			InteractWithEntities(entities);
 			UpdateMovement(entities, map);
-			if (state != HURT_BOUNCE && state != ROLL_ATTACK) UpdateFacingWithVelocity();
+			if (state == NORMAL && swordCharge == 0) 
+				UpdateFacingWithVelocity();
 			if (state == ROLL_ATTACK){
 				if (hitSomething){
 					state = NORMAL;
@@ -52,7 +51,15 @@ package Entities
 					currFrame = 0;
 					frameCount = 0;
 				}
-			}
+			}if (state == SPIN_SWORD_ATTACK){
+				if (spinSword < 40) NextFacing();
+				spinSword++;
+				if (spinSword > 40){
+					spinSword = 0;
+					state = NORMAL;
+				}
+			}else CorrectFacing();
+			
 			if (hurt > 0){
 				hurt--;
 				if (hurt <= 0) state = NORMAL;
@@ -76,6 +83,7 @@ package Entities
 							state = ROLL_ATTACK;
 							currFrame = 1;
 							frameCount = 0;
+							swordCharge = 0;
 							entities[i].visible = false;
 							entities[i].delete_me = true;
 						}
@@ -89,11 +97,11 @@ package Entities
 					}
 				}else if (entities[i] is Projectile){
 					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb)){
-						entities[i].delete_me = true;
-						if (!TryToKillProjectile(entities[i]) || state != NORMAL){
+						if (!TryToKillProjectile(entities[i])){
 							GetHurtByObject(entities[i]);
 							break;
 						}
+						entities[i].delete_me = true;
 					}
 				}
 			}
@@ -101,6 +109,7 @@ package Entities
 		
 		public function TryToKillProjectile(projectile:Projectile):Boolean
 		{
+			if (projectile.delete_me) return true;
 			if (!projectile.diagonal){
 				if (projectile.facing == Global.LEFT && facing == Global.RIGHT){
 					projectile.x += 10;
@@ -140,7 +149,7 @@ package Entities
 			}return false;
 		}
 		
-		public function GetHurtByObject(enemy:Mover):void
+		override public function GetHurtByObject(object:Mover):void
 		{
 			hp -= 1;
 			trace("Player HP: "+hp);
@@ -148,10 +157,11 @@ package Entities
 				state = HURT_BOUNCE;
 				hurt = 7;
 				invincibility = 20;
+				swordCharge = 0;
 				vel.x = 0;
 				vel.y = 0;
-				var ex:Number = enemy.x;
-				var ey:Number = enemy.y;
+				var ex:Number = object.x;
+				var ey:Number = object.y;
 				if (Math.abs(ex-x) > Math.abs(ey-y)){
 					if (ex > x) vel.x = -topspeed * 2;
 					else vel.x = topspeed * 2;
@@ -165,6 +175,26 @@ package Entities
 				trace("Player has died!");
 				hp = 3;
 			}
+		}
+		
+		public function NextFacing():void
+		{
+			if (facing == Global.LEFT) facing = Global.UPLEFT;
+			else if (facing == Global.UPLEFT) facing = Global.UP;
+			else if (facing == Global.UP) facing = Global.UPRIGHT;
+			else if (facing == Global.UPRIGHT) facing = Global.RIGHT;
+			else if (facing == Global.RIGHT) facing = Global.DOWNRIGHT;
+			else if (facing == Global.DOWNRIGHT) facing = Global.DOWN;
+			else if (facing == Global.DOWN) facing = Global.DOWNLEFT;
+			else if (facing == Global.DOWNLEFT) facing = Global.LEFT;
+		}
+		
+		public function CorrectFacing():void
+		{
+			if (facing == Global.UPLEFT) facing = Global.LEFT;
+			else if (facing == Global.UPRIGHT) facing = Global.UP;
+			else if (facing == Global.DOWNRIGHT) facing = Global.RIGHT;
+			else if (facing == Global.DOWNLEFT) facing = Global.DOWN;
 		}
 		
 		override public function UpdateAnimation():void
@@ -201,7 +231,7 @@ package Entities
 			if (++frameCount >= frameDelay){
 				if (++currFrame >= maxFrame){
 					currFrame = 0;
-					if (state != NORMAL && state != HURT_BOUNCE) 
+					if (state == ROLL_ATTACK || state == SWORD_ATTACK) 
 						state = NORMAL;
 				}
 				frameCount = 0;

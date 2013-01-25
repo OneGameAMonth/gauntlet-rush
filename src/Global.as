@@ -38,6 +38,11 @@ package
 		public static const S_KEY:int = 83;
 		public static var LetterKeys:Dictionary;
 		
+		public static const UPLEFT:int = 301;
+		public static const UPRIGHT:int = 302;
+		public static const DOWNLEFT:int = 303;
+		public static const DOWNRIGHT:int = 304
+		
 		//PLAYER INPUT KEYS!!!
 		public static var P_LEFT:int = LEFT;
 		public static var P_RIGHT:int = RIGHT;
