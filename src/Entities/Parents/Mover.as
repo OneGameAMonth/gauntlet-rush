@@ -18,7 +18,7 @@ package Entities.Parents
 			hitSomething = false;
 		}
 		
-		public function UpdateMovement(entities:Array, map:Array, keepMoving:Boolean = false):void
+		public function UpdateMovement(entities:Array, map:Array, keepMoving:Boolean = false, diagonal:Boolean = false):void
 		{
 			var solids:Array = [];
 			var i:int;
@@ -32,22 +32,15 @@ package Entities.Parents
 			
 			//Update movement
 			if (solids.length > 0)
-				CollideWithSolids(solids, keepMoving);
+				CollideWithSolids(solids, keepMoving, diagonal);
 			else{
 				y += vel.y;
 				if (vel.y == 0) x += vel.x;
 			}
 		}
 		
-		public function UpdateFacingWithVelocity():void
-		{
-			if (vel.y > 0) facing = Global.DOWN;
-			else if (vel.y < 0) facing = Global.UP;
-			else if (vel.x > 0) facing = Global.RIGHT;
-			else if (vel.x < 0) facing = Global.LEFT;
-		}
 		
-		public function CollideWithSolids(solids:Array, keepMoving:Boolean):void
+		public function CollideWithSolids(solids:Array, keepMoving:Boolean, diagonal:Boolean):void
 		{
 			hitSomething = false;
 			var i:int;
@@ -77,7 +70,7 @@ package Entities.Parents
 			}
 			y += vel.y;
 			
-			if (vel.y != 0) return;
+			if (vel.y != 0 && !diagonal) return;
 			for (i = 0; i < solids.length; i++){
 				//horizontal solid collisions (LEFT)
 				if (CheckRectIntersect(solids[i], x+lb+vel.x, y+tb, x+lb, y+bb)){
@@ -103,6 +96,14 @@ package Entities.Parents
 				}
 			}
 			x += vel.x;
+		}
+		
+		public function UpdateFacingWithVelocity():void
+		{
+			if (vel.y > 0) facing = Global.DOWN;
+			else if (vel.y < 0) facing = Global.UP;
+			else if (vel.x > 0) facing = Global.RIGHT;
+			else if (vel.x < 0) facing = Global.LEFT;
 		}
 		
 		override public function UpdateAnimation():void

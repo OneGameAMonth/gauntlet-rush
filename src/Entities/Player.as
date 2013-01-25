@@ -51,12 +51,16 @@ package Entities
 					currFrame = 0;
 					frameCount = 0;
 				}
-			}if (state == SPIN_SWORD_ATTACK){
-				if (spinSword < 40) NextFacing();
+			}if (state == SPIN_SWORD_ATTACK || spinSword > 0){
+				if (spinSword < 40 || spinSword%3 == 0) NextFacing();
 				spinSword++;
-				if (spinSword > 40){
-					spinSword = 0;
+				if (spinSword == 40){
 					state = NORMAL;
+					rest = 40;
+					vel.x = 0;
+					vel.y = 0;
+				}else if (spinSword >= 80){
+					spinSword = 0;
 				}
 			}else CorrectFacing();
 			
@@ -84,6 +88,7 @@ package Entities
 							currFrame = 1;
 							frameCount = 0;
 							swordCharge = 0;
+							spinSword = 0;
 							entities[i].visible = false;
 							entities[i].delete_me = true;
 						}
@@ -92,13 +97,14 @@ package Entities
 				else if (entities[i] is Enemy){
 					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb)){
 						if (entities[i].hurt <= 0 && entities[i].invincibility <= 0)
-						GetHurtByObject(entities[i]);
+						GetHurtByObject(entities[i], entities[i].atkPow);
 						break;
 					}
 				}else if (entities[i] is Projectile){
 					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb)){
 						if (!TryToKillProjectile(entities[i])){
-							GetHurtByObject(entities[i]);
+							GetHurtByObject(entities[i], entities[i].atkPow);
+							entities[i].delete_me = true;
 							break;
 						}
 						entities[i].delete_me = true;
@@ -110,56 +116,34 @@ package Entities
 		public function TryToKillProjectile(projectile:Projectile):Boolean
 		{
 			if (projectile.delete_me) return true;
-			if (!projectile.diagonal){
-				if (projectile.facing == Global.LEFT && facing == Global.RIGHT){
-					projectile.x += 10;
-					return true;
-				}if (projectile.facing == Global.RIGHT && facing == Global.LEFT){
-					projectile.x -= 10;
-					return true;
-				}if (projectile.facing == Global.UP && facing == Global.DOWN){
-					projectile.y += 10;
-					return true;
-				}if (projectile.facing == Global.DOWN && facing == Global.UP){
-					projectile.y -= 10;
-					return true;
-				}
-				return false;
-			}
 			
 			if (Math.abs(projectile.x-x) > Math.abs(projectile.y-y)){
-				if (projectile.x > x && facing == Global.RIGHT){
-					projectile.x += 10;
+				if (projectile.x > x && facing == Global.RIGHT)
 					return true;
-				}
-				else if (projectile.x < x && facing == Global.LEFT){
-					projectile.x -= 10;
+				else if (projectile.x < x && facing == Global.LEFT)
 					return true;
-				}
 			}
 			else{
-				if (projectile.y > y && facing == Global.DOWN){
-					projectile.y += 10;
+				if (projectile.y > y && facing == Global.DOWN)
 					return true;
-				}
-				else if (projectile.y < y && facing == Global.UP){
-					projectile.y -= 10;
+				else if (projectile.y < y && facing == Global.UP)
 					return true;
-				}
 			}return false;
 		}
 		
-		override public function GetHurtByObject(object:Mover):void
+		override public function GetHurtByObject(object:Mover, dmg:int = 1):void
 		{
-			hp -= 1;
+			hp -= dmg;
 			trace("Player HP: "+hp);
 			if (hp > 0){
 				state = HURT_BOUNCE;
+				spinSword = 0;
 				hurt = 7;
 				invincibility = 20;
 				swordCharge = 0;
 				vel.x = 0;
 				vel.y = 0;
+				rest = 0;
 				var ex:Number = object.x;
 				var ey:Number = object.y;
 				if (Math.abs(ex-x) > Math.abs(ey-y)){

@@ -6,11 +6,13 @@ package Entities.Parents
 	{		
 		public var baseAniX:int;
 		public var hurtAniX:int;
+		public var atkPow:int;
 		
 		public function Enemy(x:int, y:int, lb:int, tb:int, rb:int, bb:int) 
 		{
 			super(x, y, lb, tb, rb, bb);
 			
+			atkPow = 1;
 			baseAniX = currAniX;
 			hurtAniX = currAniX;
 		}

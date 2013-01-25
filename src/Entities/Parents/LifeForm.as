@@ -21,7 +21,7 @@ package Entities.Parents
 			state = NORMAL;
 		}
 		
-		public function GetHurtByObject(object:Mover):void
+		public function GetHurtByObject(object:Mover, dmg:int = 1):void
 		{
 			hp -= 1;
 			if (hp > 0){

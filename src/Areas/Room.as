@@ -117,7 +117,7 @@ package Areas
 					player.vel.y = 0;
 					player.frameCount = 0;
 				}else if (player.state == Player.ROLL_ATTACK){
-					if (player.currFrame < 2) return;
+					if (player.currFrame < 1) return;
 					player.vel.x *= 1.5;
 					player.vel.y *= 1.5;
 					player.frameCount = 1;

@@ -23,6 +23,7 @@ package Entities.Enemies
 		
 		override public function Update(entities:Array, map:Array):void
 		{
+			if (delete_me) return;
 			UpdateMovement(entities, map);
 			if (hitSomething) delete_me = true;
 			UpdateFacingWithVelocity();
