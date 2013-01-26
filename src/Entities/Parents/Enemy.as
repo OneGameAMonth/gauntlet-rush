@@ -4,8 +4,6 @@ package Entities.Parents
 	
 	public class Enemy extends LifeForm
 	{		
-		public var baseAniX:int;
-		public var hurtAniX:int;
 		public var atkPow:int;
 		public var canBeHurt:Boolean;
 		
@@ -15,8 +13,6 @@ package Entities.Parents
 			
 			atkPow = 1;
 			canBeHurt = true;
-			baseAniX = currAniX;
-			hurtAniX = currAniX;
 		}
 		
 		override public function Update(entities:Array, map:Array):void
@@ -40,13 +36,6 @@ package Entities.Parents
 		
 		public function UpdateScript(entities:Array, map:Array):void
 		{
-		}
-		
-		override public function UpdateAnimation():void
-		{
-			if (invincibility > 0) currAniX = hurtAniX;
-			else currAniX = baseAniX;
-			super.UpdateAnimation();
 		}
 	}
 }

@@ -26,7 +26,10 @@ package
 			roomArray.push(new Room02());
 			roomArray.push(new Room03());
 			roomArray.push(new Room04());
-			roomIndex = 3;
+			roomArray.push(new Room05());
+			roomIndex = 0;
+			
+			Global.HP = 6;
 		}
 		
 		public function Render():void

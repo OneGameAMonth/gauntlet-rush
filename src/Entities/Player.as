@@ -5,6 +5,9 @@ package Entities
 	import Entities.Parents.Enemy;
 	import Entities.Enemies.Bubble;
 	import Entities.Parents.Projectile;
+	import flash.geom.Matrix;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	
 	public class Player extends LifeForm
 	{
@@ -20,22 +23,45 @@ package Entities
 		
 		[Embed(source = '../resources/images/player_sheet.png')]
 		private var my_sprite_sheet:Class;
-		
-		[Embed(source = '../resources/images/hurt_player_sheet.png')]
+		[Embed(source = '../resources/images/player_hurt_sheet.png')]
 		private var hurt_sprite_sheet:Class;
+		[Embed(source = '../resources/images/player_hurt2_sheet.png')]
+		private var hurt2_sprite_sheet:Class;
 		
 		public function Player(x:int, y:int)
 		{
 			super(x, y, 2, 2, 14, 14);
 			sprite_sheet = my_sprite_sheet;
 			facing = Global.UP;
-			hp = 6;
+			Global.HP = 6;
 			
 			rest = 0;
 			rollRest = 0;
 			swordCharge = 0;
 			spinSword = 0;
 			noSwordCounter = 0;
+		}
+		
+		override public function Render(levelRenderer:BitmapData):void
+		{
+			if (!visible) return;
+			
+			sprite_sheet = my_sprite_sheet;
+			if (invincibility > 0){
+				if ((invincibility >= 4 && invincibility <= 8) || (invincibility >= 12 && invincibility <= 16) || 
+					(invincibility >= 20 && invincibility <= 24) || (invincibility >= 28 && invincibility <= 32) || 
+					(invincibility >= 36 && invincibility <= 40))
+					sprite_sheet = hurt2_sprite_sheet;
+				else sprite_sheet = hurt_sprite_sheet;
+			}
+			
+			var temp_image:Bitmap = new Bitmap(new BitmapData(frameWidth, frameHeight));
+			var temp_sheet:Bitmap = new sprite_sheet();
+			DrawSpriteFromSheet(temp_image, temp_sheet);
+			
+			var matrix:Matrix = new Matrix();
+			matrix.translate(x, y);
+			levelRenderer.draw(image_sprite, matrix);
 		}
 		
 		override public function Update(entities:Array, map:Array):void
@@ -142,13 +168,13 @@ package Entities
 		
 		override public function GetHurtByObject(object:Mover, dmg:int = 1):void
 		{
-			hp -= dmg;
-			trace("Player HP: "+hp);
-			if (hp > 0){
+			Global.HP -= dmg;
+			trace("Player HP: "+Global.HP);
+			if (Global.HP > 0){
 				state = HURT_BOUNCE;
 				spinSword = 0;
 				hurt = 7;
-				invincibility = 20;
+				invincibility = 40;
 				swordCharge = 0;
 				vel.x = 0;
 				vel.y = 0;
@@ -170,7 +196,8 @@ package Entities
 			}
 			else{
 				trace("Player has died!");
-				hp = 3;
+				throw new Error("Player has died!");
+				//Global.HP = 3;
 			}
 		}
 		
@@ -200,9 +227,6 @@ package Entities
 			else if (facing == Global.DOWN) currAniY = 0;
 			else if (facing == Global.LEFT) currAniY = 1;
 			else if (facing == Global.RIGHT) currAniY = 3;
-			
-			if (invincibility <= 0) sprite_sheet = my_sprite_sheet;
-			else sprite_sheet = hurt_sprite_sheet;
 				
 			if (state == NORMAL){ 
 				currAniX = 0;

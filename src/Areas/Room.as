@@ -1,6 +1,7 @@
 package Areas 
 {
 	import Entities.*;
+	import Entities.Enemies.Gohma;
 	import Entities.Parents.LifeForm;
 	import Entities.Parents.Enemy;
 	import Entities.Parents.Projectile;
@@ -98,7 +99,8 @@ package Areas
 				entities[i].Update(entities, map);
 				if (entities[i].delete_me){
 					if (entities[i] is Enemy || entities[i] is Projectile){
-						entities.push(new EnemyDie(entities[i].x, entities[i].y));
+						if (entities[i] is Gohma) entities.push(new EnemyDie(entities[i].x+32, entities[i].y+8, 2));
+						else entities.push(new EnemyDie(entities[i].x, entities[i].y));
 						if (entities[i] is Enemy) enemyCount--;
 					}
 					entities.splice(i, 1);

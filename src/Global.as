@@ -6,7 +6,10 @@ package
 	 */
 	import flash.utils.Dictionary;
 	public class Global 
-	{		
+	{	
+		//GAME STUFF
+		public static var HP:int;
+		
 		//dimensions of stage
 		public static var zoom:int = 2;
 		public static var stageWidth:int = 640/zoom;

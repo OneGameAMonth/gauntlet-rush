@@ -1,14 +1,19 @@
 package Entities.Enemies 
 {
 	import Entities.Parents.Projectile;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.Sprite;
+	import flash.geom.Matrix;
 	
 	public class Fireball extends Projectile
 	{
 		[Embed(source = '../../resources/images/fireball_sheet.png')]
 		private var my_sprite_sheet:Class;
 		private var invincibility:int;
+		private var scale:int;
 		
-		public function Fireball(x:Number, y:Number, px:Number, py:Number)
+		public function Fireball(x:Number, y:Number, px:Number, py:Number, scale:int = 1)
 		{
 			super(x, y, 5, 5, 10, 10);
 			sprite_sheet = my_sprite_sheet;
@@ -17,9 +22,11 @@ package Entities.Enemies
 			vel.x = topspeed * Math.abs(Math.cos(angle)) * ((px-x)/Math.abs(px-x));
 			vel.y = topspeed * Math.abs(Math.sin(angle)) * ((py-y)/Math.abs(py-y));
 			
-			maxFrame = 2;
-			frameDelay = 5;
+			maxFrame = 4;
+			frameDelay = 2;
 			invincibility = 30;
+			this.scale = scale;
+			lb*=scale; tb*=scale; rb*=scale; bb*=scale;
 		}
 		
 		override public function Update(entities:Array, map:Array):void
@@ -29,6 +36,20 @@ package Entities.Enemies
 			UpdateMovement(entities, map, false, true);
 			if (hitSomething) delete_me = true;
 			UpdateAnimation();
+		}
+		
+		override public function Render(levelRenderer:BitmapData):void
+		{
+			if (!visible) return;
+			
+			var temp_image:Bitmap = new Bitmap(new BitmapData(frameWidth, frameHeight));
+			var temp_sheet:Bitmap = new sprite_sheet();
+			DrawSpriteFromSheet(temp_image, temp_sheet);
+				
+			var matrix:Matrix = new Matrix();
+			matrix.scale(scale, scale);
+			matrix.translate(x, y);
+			levelRenderer.draw(image_sprite, matrix);
 		}
 		
 		override public function UpdateMovement(entities:Array, map:Array, keepMoving:Boolean = false, diagonal:Boolean = false):void

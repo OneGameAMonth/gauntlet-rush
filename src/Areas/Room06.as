@@ -3,10 +3,10 @@ package Areas
 	import Entities.Enemies.*;
 	import Entities.Portcullis;
 	import Entities.Player;
-	public class Room01 extends Room
+	public class Room06 extends Room
 	{
 		
-		public function Room01() 
+		public function Room06() 
 		{
 			super(320, 240, 1);
 			//create portculli
@@ -18,11 +18,7 @@ package Areas
 			playerIndex = entities.length-1;
 			
 			//create enemies
-			entities.push(new Octorok(96, 96));
-			entities.push(new Octorok(224, 128));
-			entities.push(new Octorok(128, 64));
-			entities.push(new Octoturret(164, 84));
-			enemyCount = 4;
+			enemyCount = 1;
 		}		
 	}
 }

@@ -3,11 +3,9 @@ To save on time, make the game short (ten areas?) But challenging (not nintendo 
 "If you truly love me, you must prove yourself worthy of my affection."
 "I must take this challenge and prove myself." for a girl it becomes increasingly evident that she has no interest in you
 
-0. Fix damage blinker to a color transform
-1. Create other monsters and set up the levels.
-2. Boss(es, at most 2)
-3. HUD for health and points. Also institute point system. Add heart containers/save points
-4. Add story opening, end, and between levels (zelda dialogue)
+1. HUD for health and points. Also institute point system. Add heart containers/save points
+2. Create other monsters and set up the levels.
+3. Add story opening, end, and between levels (zelda dialogue)
 	
 http://www.zeldadungeon.net/Zelda01-the-legend-of-zelda-enemy-guide.php
 http://androidarts.com/console_games.htm

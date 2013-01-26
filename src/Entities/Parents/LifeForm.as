@@ -31,10 +31,10 @@ package Entities.Parents
 				vel.x = 0;
 				vel.y = 0;
 				var ofacing:int = object.facing;
-				if (ofacing == Global.LEFT) vel.x = -6.0;
-				else if (ofacing == Global.RIGHT) vel.x = 6.0;
-				else if (ofacing == Global.UP) vel.y = -6.0;
-				else if (ofacing == Global.DOWN) vel.y = 6.0;
+				if (ofacing == Global.LEFT || ofacing == Global.UPLEFT) vel.x = -6.0;
+				else if (ofacing == Global.RIGHT || ofacing == Global.DOWNRIGHT) vel.x = 6.0;
+				else if (ofacing == Global.UP || ofacing == Global.UPRIGHT) vel.y = -6.0;
+				else if (ofacing == Global.DOWN || ofacing == Global.DOWNLEFT) vel.y = 6.0;
 			}
 			else{
 				delete_me = true;
