@@ -20,6 +20,8 @@ package Entities.Enemies
 			frameDelay = 3;
 			topspeed = 2.0;
 			randTimer = 0;
+			
+			atkPow = 0.5;
 		}
 		
 		override public function UpdateScript(entities:Array, map:Array):void

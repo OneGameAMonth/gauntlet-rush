@@ -2,8 +2,9 @@ package Areas
 {
 	import Entities.Enemies.*;
 	import Entities.Tile;
-	import Entities.Portcullis;
+	import Entities.Items.Portcullis;
 	import Entities.Player;
+	import Entities.Items.SavePoint;
 	
 	public class Room02 extends Room
 	{
@@ -11,6 +12,31 @@ package Areas
 		public function Room02() 
 		{
 			super(320, 240, 1);
+			
+			//CREATE MORE SOLIDS
+			var i:int;
+			for (i = 0; i < 4; i++){
+				map[5][5+i] = new Tile((5+i)*16, 5*16, 1, 0, true);
+				map[5][11+i] = new Tile((11+i)*16, 5*16, 1, 0, true);
+				map[8][5+i] = new Tile((5+i)*16, 8*16, 1, 0, true);
+				map[8][11+i] = new Tile((11+i)*16, 8*16, 1, 0, true);
+				if (i < 2){
+					map[4][7+i] = new Tile((7+i)*16, 4*16, 1, 0, true);
+					map[4][11+i] = new Tile((11+i)*16, 4*16, 1, 0, true);
+					map[9][7+i] = new Tile((7+i)*16, 9*16, 1, 0, true);
+					map[9][11+i] = new Tile((11+i)*16, 9*16, 1, 0, true);
+				}
+			}
+			map[3][8] = new Tile(8*16, 3*16, 1, 0, true);
+			map[3][11] = new Tile(11*16, 3*16, 1, 0, true);
+			map[10][8] = new Tile(8*16, 10*16, 1, 0, true);
+			map[10][11] = new Tile(11*16, 10*16, 1, 0, true);
+		}
+		
+		override public function CreateEntities():void
+		{
+			super.CreateEntities();
+			
 			//create portculli
 			entities.push(new Portcullis(6*16, 0, 0));
 			portcullisIndex = entities.length-1;
@@ -31,24 +57,8 @@ package Areas
 			entities.push(new StoneStatue(16, height-32, 0, 0));
 			entities.push(new StoneStatue(width-32, height-32, 0, 1));
 			
-			//CREATE MORE SOLIDS
-			var i:int;
-			for (i = 0; i < 4; i++){
-				map[5][5+i] = new Tile((5+i)*16, 5*16, 1, 0, true);
-				map[5][11+i] = new Tile((11+i)*16, 5*16, 1, 0, true);
-				map[8][5+i] = new Tile((5+i)*16, 8*16, 1, 0, true);
-				map[8][11+i] = new Tile((11+i)*16, 8*16, 1, 0, true);
-				if (i < 2){
-					map[4][7+i] = new Tile((7+i)*16, 4*16, 1, 0, true);
-					map[4][11+i] = new Tile((11+i)*16, 4*16, 1, 0, true);
-					map[9][7+i] = new Tile((7+i)*16, 9*16, 1, 0, true);
-					map[9][11+i] = new Tile((11+i)*16, 9*16, 1, 0, true);
-				}
-			}
-			map[3][8] = new Tile(8*16, 3*16, 1, 0, true);
-			map[3][11] = new Tile(11*16, 3*16, 1, 0, true);
-			map[10][8] = new Tile(8*16, 10*16, 1, 0, true);
-			map[10][11] = new Tile(11*16, 10*16, 1, 0, true);
-		}		
+			//create items
+			entities.push(new SavePoint(13*16+6, 16+6));
+		}
 	}
 }

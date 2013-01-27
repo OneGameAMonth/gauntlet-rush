@@ -1,4 +1,4 @@
-package Entities 
+package Entities.Enemies 
 {
 	import Entities.Parents.GameSprite;
 	import flash.display.Bitmap;
@@ -8,7 +8,7 @@ package Entities
 	
 	public class EnemyDie extends GameSprite
 	{
-		[Embed(source = '../resources/images/monster_death_sheet.png')]
+		[Embed(source = '../../resources/images/monster_death_sheet.png')]
 		private var my_sprite_sheet:Class;
 		
 		private var scale:int;

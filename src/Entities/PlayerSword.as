@@ -60,9 +60,9 @@ package Entities
 						entities[i].GetHurtByObject(this);
 						if (entities[i].hp > 0) hitEnemy = true;
 					}
-				}else if (entities[i] is Projectile){
+				}else if (entities[i] is Projectile && entities[i].canBeKilled){
 					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb))
-						entities.delete_me = true;
+						entities[i].delete_me = true;
 				}
 			}
 			

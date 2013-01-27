@@ -46,7 +46,7 @@ package Entities.Enemies
 			
 			fireCounter--;
 			if (fireCounter <= 0){
-				fireCounter = Math.floor(Math.random()*20)+50;
+				fireCounter = Math.floor(Math.random()*20)+80;
 				for (var i:int = 0; i < entities.length; i++){
 					if (entities[i] is Player && entities[i].y > y+bb){
 						entities.push(new Fireball(x+32, y+8, entities[i].x, entities[i].y, 2));
@@ -56,8 +56,9 @@ package Entities.Enemies
 			}
 		}
 		
-		override public function GetHurtByObject(object:Mover, dmg:int = 1):void
+		override public function GetHurtByObject(object:Mover, dmg:Number = 1):void
 		{
+			if (object.x < x+16 || object.x > x+rb-54 || object.y < y+8) return;
 			hp -= 1;
 			if (hp > 0){
 				invincibility = 20;

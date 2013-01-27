@@ -8,7 +8,8 @@ package
 	public class Global 
 	{	
 		//GAME STUFF
-		public static var HP:int;
+		public static var HP:Number;
+		public static var MAX_HP:Number;
 		
 		//dimensions of stage
 		public static var zoom:int = 2;

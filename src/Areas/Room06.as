@@ -1,7 +1,7 @@
 package Areas 
 {
 	import Entities.Enemies.*;
-	import Entities.Portcullis;
+	import Entities.Items.Portcullis;
 	import Entities.Player;
 	public class Room06 extends Room
 	{
@@ -9,6 +9,11 @@ package Areas
 		public function Room06() 
 		{
 			super(320, 240, 1);
+		}		
+		
+		override public function CreateEntities():void
+		{
+			super.CreateEntities();
 			//create portculli
 			entities.push(new Portcullis(6*16, 0, 0));
 			portcullisIndex = entities.length-1;
@@ -19,6 +24,6 @@ package Areas
 			
 			//create enemies
 			enemyCount = 1;
-		}		
+		}
 	}
 }

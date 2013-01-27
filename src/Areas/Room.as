@@ -1,7 +1,9 @@
 package Areas 
 {
 	import Entities.*;
+	import Entities.Items.*;
 	import Entities.Enemies.Gohma;
+	import Entities.Enemies.EnemyDie;
 	import Entities.Parents.LifeForm;
 	import Entities.Parents.Enemy;
 	import Entities.Parents.Projectile;
@@ -22,8 +24,12 @@ package Areas
 		public var width:int;
 		public var height:int;
 		
+		[Embed(source = '../resources/images/heart_hud_sheet.png')]
+		protected var heart_hud_sheet:Class;
 		[Embed(source = '../resources/images/tileset.png')]
 		protected var tile_set:Class;
+		
+		protected var HUD_sprite:Sprite;
 		
 		public var map:Array;
 		public var entities:Array;
@@ -34,6 +40,7 @@ package Areas
 		
 		public function Room(width:int, height:int, id:int)
 		{
+			HUD_sprite = new Sprite();
 			LevelRenderer = new BitmapData(width, height, false, 0x000000);
 			L_bitmap = new Bitmap(LevelRenderer);
 			_id = id;
@@ -54,7 +61,13 @@ package Areas
 				}
 				map.push(row);
 			}
+			CreateEntities();
+		}
+		
+		public function CreateEntities():void
+		{
 			entities = [];
+			playerIndex = -1;
 		}
 		
 		public function Render():void
@@ -63,20 +76,27 @@ package Areas
 			LevelRenderer.fillRect(new Rectangle(0, 0, LevelRenderer.width, LevelRenderer.height), 0x000000);
 			
 			var i:int, j:int;
-			var temp_sheet:Bitmap = new tile_set();
+			var tile_sheet:Bitmap = new tile_set();
 			for (i = 0; i < map.length; i++){
 				for (j = 0; j < map[i].length; j++){
 					var sprite_x:int = map[i][j].tileset_x*16;
 					var sprite_y:int = map[i][j].tileset_y*16;
 					var draw_x:int = j*16;
 					var draw_y:int = i*16;
-					LevelRenderer.copyPixels(temp_sheet.bitmapData,
+					LevelRenderer.copyPixels(tile_sheet.bitmapData,
 						new Rectangle(sprite_x, sprite_y, 16, 16),
 						new Point(draw_x, draw_y));
 				}
 			}for(i = entities.length-1; i >= 0; i--){
 				entities[i].Render(LevelRenderer);
 			}
+			
+			
+			//DRAW HUD
+			for (i = 0; i < HUD_sprite.numChildren;i++){ HUD_sprite.removeChildAt(i); }
+			var temp_image:Bitmap = new Bitmap(new BitmapData(Global.MAX_HP*15, 16));
+			DrawHeartHUD(temp_image, new heart_hud_sheet());
+			LevelRenderer.draw(HUD_sprite);
 			
 			var matrix:Matrix = new Matrix();
 			matrix.translate(L_bitmap.x, L_bitmap.y);
@@ -99,19 +119,56 @@ package Areas
 				entities[i].Update(entities, map);
 				if (entities[i].delete_me){
 					if (entities[i] is Enemy || entities[i] is Projectile){
-						if (entities[i] is Gohma) entities.push(new EnemyDie(entities[i].x+32, entities[i].y+8, 2));
+						if (entities[i] is Gohma){
+							entities.push(new EnemyDie(entities[i].x+32, entities[i].y+8, 2));
+							
+							if (portcullisIndex >= 0){
+								entities.push(new ToNextRoom(
+									entities[portcullisIndex].x, entities[portcullisIndex].y-16));
+								entities.splice(portcullisIndex, 1);
+								portcullisIndex = -1;
+							}
+						}
 						else entities.push(new EnemyDie(entities[i].x, entities[i].y));
 						if (entities[i] is Enemy) enemyCount--;
 					}
 					entities.splice(i, 1);
 				}
-				if (getQualifiedClassName(entities[i]) == "Entities::Player") playerIndex = i;
+				if (entities[i] is Player) playerIndex = i;
+				if (entities[i] is HeartContainer || entities[i] is SavePoint){
+					if (portcullisIndex < 0) entities[i].visible = true;
+				}
 			}
 			if (playerIndex >= 0) UpdateView(entities[playerIndex]);
+			if (Global.HP <= 0) ReloadSaveGame();
+		}
+		
+		public function Restart():void
+		{
+			CreateEntities();
+		}
+		
+		public function ReloadSaveGame():void
+		{
+			Game.roomIndex = Save.ROOM_INDEX;
+			Global.MAX_HP = Save.MAX_HP;
+			Global.HP = Save.HP;
+			
+			var pIndex:int = Game.roomArray[Game.roomIndex].playerIndex;
+			Game.roomArray[Game.roomIndex].entities[pIndex].Restart(Save.PLAYER_X, Save.PLAYER_Y, Global.UP);
+			for (var i:int = Game.roomIndex+1; i < Game.roomArray.length; i++){
+				Game.roomArray[i].Restart();
+			}
 		}
 		
 		public function PlayerInput(player:Player):void
 		{
+			if (Save.CAN_SAVE){
+				Save.ROOM_INDEX = Game.roomIndex;
+				Save.MAX_HP = Global.MAX_HP;
+				Save.HP = Global.HP;
+			}
+			
 			if (player.rest > 0 || player.state == LifeForm.HURT_BOUNCE) return;
 			if (Global.CheckKeyPressed(Global.P_Z_KEY) && player.state != Player.SPIN_SWORD_ATTACK && player.noSwordCounter <= 0){
 				if (player.state == LifeForm.NORMAL){
@@ -188,13 +245,15 @@ package Areas
 		
 		public function UpdateView(player:Player):void
 		{
+			var hudHeight:int = 0;
+			
 			var rb:Number = player.x+player.rb+64;
 			var lb:Number = player.x+player.lb-64;
 			var tb:Number = player.y+player.tb-64;
 			var bb:Number = player.y+player.bb+64;
 			var right:Number = Global.stageWidth-L_bitmap.x;
 			var left:Number = 0-(L_bitmap.x);
-			var top:Number = 0-(L_bitmap.y);
+			var top:Number = 0-(L_bitmap.y)+hudHeight;
 			var bottom:Number = Global.stageHeight-L_bitmap.y;
 			
 			var v_movespeed:Number = Math.abs(player.vel.x);
@@ -213,7 +272,22 @@ package Areas
 			
 			if (L_bitmap.y < (L_bitmap.height-Global.stageHeight)*(-1))
 				L_bitmap.y = (L_bitmap.height-Global.stageHeight)*(-1);
-			if (L_bitmap.y > 0) L_bitmap.y = 0;
+			if (L_bitmap.y > hudHeight) L_bitmap.y = hudHeight;
+		}
+		
+		public function DrawHeartHUD(temp_image:Bitmap, temp_sheet:Bitmap):void
+		{			
+			for (var i:int = 0; i < Global.MAX_HP; i++){
+				var sprite_x:int = 0;
+				if (Global.HP == i+0.5) sprite_x = 1*15;
+				else if (Global.HP < i+0.5) sprite_x = 2*15;
+				temp_image.bitmapData.copyPixels(temp_sheet.bitmapData,
+					new Rectangle(sprite_x, 0, 15, 16), 
+					new Point(i*15,0)
+				);
+			}
+			
+			HUD_sprite.addChild(temp_image);
 		}
 	}
 }

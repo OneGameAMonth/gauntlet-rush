@@ -19,6 +19,7 @@ package Entities.Enemies
 			topspeed = 4.0;
 			randTimer = 0;
 			stopChaseTimer = 0;
+			atkPow = 0.5;
 		}
 		
 		override public function UpdateScript(entities:Array, map:Array):void
@@ -27,13 +28,14 @@ package Entities.Enemies
 				if (entities[i] is Player && entities[i].invincibility <= 0){
 					var p:Player = entities[i];
 					if ((p.y+p.tb > y && p.y+p.tb < y+bb) || (p.y+p.bb > y && p.y+p.bb < y+bb)){
-						if (p.x > x){
+						if (p.x > x+4){
 							facing = Global.RIGHT;
 							vel.x = topspeed;
-						}else{
+						}else if (p.x < x-4){
 							facing = Global.LEFT;
 							vel.x = -topspeed;
-						}if (p.y > y){
+						}else vel.x = 0;
+						if (p.y > y){
 							vel.y = topspeed;
 						}else{
 							vel.y = -topspeed;

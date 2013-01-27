@@ -19,6 +19,7 @@ package Entities.Enemies
 			
 			maxFrame = 4;
 			frameDelay = 3;
+			atkPow = 0.5;
 		}
 		
 		override public function Update(entities:Array, map:Array):void

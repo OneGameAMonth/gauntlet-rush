@@ -1,4 +1,4 @@
-package Entities 
+package Entities.Items 
 {
 	import Entities.Parents.GameObject;
 	import Entities.Player;

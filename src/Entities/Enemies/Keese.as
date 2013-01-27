@@ -12,8 +12,9 @@ package Entities.Enemies
 		public var randTimeLimit:int;
 		public var stopTimer:int;
 		public var randMoveTimer:int;
+		public var hyper:Boolean
 		
-		public function Keese(x:int, y:int) 
+		public function Keese(x:int, y:int, hyper:Boolean = false) 
 		{
 			super(x, y, 2, 2, 14, 14);
 			sprite_sheet = my_sprite_sheet;
@@ -25,27 +26,33 @@ package Entities.Enemies
 			randTimeLimit = Math.floor(Math.random()*15)+35;
 			stopTimer = Math.floor(Math.random()*10)+20;
 			randMoveTimer = Math.floor(Math.random()*10)+10;
+			
+			atkPow = 0.5;
+			this.hyper = hyper;
+			if (hyper) currAniY = 1;
 		}
 		
 		override public function UpdateScript(entities:Array, map:Array):void
 		{
-			timer += add;
-			if (timer >= randTimeLimit){
-				timer--;
-				stopTimer--;
-				if (stopTimer <= 0){
-					add = -1
-					stopTimer = Math.floor(Math.random()*10)+20;
+			if (!hyper){
+				timer += add;
+				if (timer >= randTimeLimit){
+					timer--;
+					stopTimer--;
+					if (stopTimer <= 0){
+						add = -1
+						stopTimer = Math.floor(Math.random()*10)+20;
+					}
+				}else if (timer <= 1){
+					timer++;
+					stopTimer--;
+					if (stopTimer <= 0){
+						add = 1;
+						randTimeLimit = Math.floor(Math.random()*15)+35;
+						stopTimer = Math.floor(Math.random()*10)+5;
+					}
 				}
-			}else if (timer <= 1){
-				timer++;
-				stopTimer--;
-				if (stopTimer <= 0){
-					add = 1;
-					randTimeLimit = Math.floor(Math.random()*15)+35;
-					stopTimer = Math.floor(Math.random()*10)+5;
-				}
-			}
+			}else timer = randTimeLimit;
 			
 			var speed:Number = topspeed * (timer/randTimeLimit)
 			frameDelay = (topspeed/speed)*(topspeed/speed)*2;

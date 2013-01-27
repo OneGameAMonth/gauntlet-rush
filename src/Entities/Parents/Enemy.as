@@ -4,7 +4,7 @@ package Entities.Parents
 	
 	public class Enemy extends LifeForm
 	{		
-		public var atkPow:int;
+		public var atkPow:Number;
 		public var canBeHurt:Boolean;
 		
 		public function Enemy(x:int, y:int, lb:int, tb:int, rb:int, bb:int) 

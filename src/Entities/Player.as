@@ -6,6 +6,7 @@ package Entities
 	import Entities.Enemies.Bubble;
 	import Entities.Parents.Projectile;
 	import flash.geom.Matrix;
+	import flash.geom.ColorTransform;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	
@@ -33,13 +34,28 @@ package Entities
 			super(x, y, 2, 2, 14, 14);
 			sprite_sheet = my_sprite_sheet;
 			facing = Global.UP;
-			Global.HP = 6;
 			
 			rest = 0;
 			rollRest = 0;
 			swordCharge = 0;
 			spinSword = 0;
 			noSwordCounter = 0;
+		}
+		
+		public function Restart(x:Number, y:Number, facing:int):void
+		{
+			this.x = x;
+			this.y = y;
+			this.facing = facing;
+			
+			Global.HP = Global.MAX_HP;
+			
+			rest = 0;
+			rollRest = 0;
+			swordCharge = 0;
+			spinSword = 0;
+			noSwordCounter = 0;
+			state = NORMAL;
 		}
 		
 		override public function Render(levelRenderer:BitmapData):void
@@ -59,9 +75,15 @@ package Entities
 			var temp_sheet:Bitmap = new sprite_sheet();
 			DrawSpriteFromSheet(temp_image, temp_sheet);
 			
+			var color:ColorTransform = new ColorTransform();
+			if (noSwordCounter > 0){
+				color.blueOffset = 255;
+				color.redOffset = 0;
+				color.greenOffset = 0;
+			}
 			var matrix:Matrix = new Matrix();
 			matrix.translate(x, y);
-			levelRenderer.draw(image_sprite, matrix);
+			levelRenderer.draw(image_sprite, matrix, color);
 		}
 		
 		override public function Update(entities:Array, map:Array):void
@@ -151,25 +173,24 @@ package Entities
 		public function TryToKillProjectile(projectile:Projectile):Boolean
 		{
 			if (projectile.delete_me) return true;
+			else if (!projectile.canBeBlocked) return false;
+			var px:Number = projectile.x;
+			var py:Number = projectile.y;
 			
-			if (Math.abs(projectile.x-x) > Math.abs(projectile.y-y)){
-				if (projectile.x > x && facing == Global.RIGHT)
-					return true;
-				else if (projectile.x < x && facing == Global.LEFT)
-					return true;
-			}
-			else{
-				if (projectile.y > y && facing == Global.DOWN)
-					return true;
-				else if (projectile.y < y && facing == Global.UP)
-					return true;
+			if (state == NORMAL){
+				if (py >= y-4 && py <= y+bb+4){
+					if (px > x && facing == Global.RIGHT) return true;
+					else if (px < x && facing == Global.LEFT) return true;
+				}else if (px >= x-4 && px <= x+rb+4){
+					if (py > y && facing == Global.DOWN) return true;
+					else if (py < y && facing == Global.UP) return true;
+				}
 			}return false;
 		}
 		
-		override public function GetHurtByObject(object:Mover, dmg:int = 1):void
+		override public function GetHurtByObject(object:Mover, dmg:Number = 1):void
 		{
 			Global.HP -= dmg;
-			trace("Player HP: "+Global.HP);
 			if (Global.HP > 0){
 				state = HURT_BOUNCE;
 				spinSword = 0;
@@ -196,8 +217,6 @@ package Entities
 			}
 			else{
 				trace("Player has died!");
-				throw new Error("Player has died!");
-				//Global.HP = 3;
 			}
 		}
 		

@@ -1,11 +1,13 @@
 To save on time, make the game short (ten areas?) But challenging (not nintendo hard), so overcoming each area is not a breeze but also isnt discouraging, and make a point system for stylish monster beating/gauntlet challenge overcoming/time?
 
 "If you truly love me, you must prove yourself worthy of my affection."
-"I must take this challenge and prove myself." for a girl it becomes increasingly evident that she has no interest in you
+"I must take this challenge and prove myself." 
+"Why won't you leave me alone!?"
+for a girl it becomes increasingly evident that she has no interest in you
 
-1. HUD for health and points. Also institute point system. Add heart containers/save points
-2. Create other monsters and set up the levels.
-3. Add story opening, end, and between levels (zelda dialogue)
+1. Create other monsters and set up the levels.
+2. Add story opening, end, and between levels (zelda dialogue)
+3. HUD points. Also institute point system??? (Display "Level 01")
 	
 http://www.zeldadungeon.net/Zelda01-the-legend-of-zelda-enemy-guide.php
 http://androidarts.com/console_games.htm

@@ -1,9 +1,9 @@
-package Entities 
+package Entities.Items 
 {
 	import Entities.Parents.GameSprite;
 	public class Portcullis extends GameSprite
 	{
-		[Embed(source = '../resources/images/portcullis_sheet.png')]
+		[Embed(source = '../../resources/images/portcullis_sheet.png')]
 		private var my_sprite_sheet:Class;
 		
 		public function Portcullis(x:int, y:int, currAniY:int)

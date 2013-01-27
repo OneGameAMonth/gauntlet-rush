@@ -12,7 +12,7 @@ package
 		public var screenBitmap:Bitmap;
 		public static var Screen:BitmapData;
 		
-		public var roomArray:Array;
+		public static var roomArray:Array;
 		public static var roomIndex:int;
 		
 		public function Game() 
@@ -22,14 +22,17 @@ package
 			screenBitmap = new Bitmap(Screen);
 			
 			roomArray = [];
+			roomArray.push(new Room00());
 			roomArray.push(new Room01());
 			roomArray.push(new Room02());
 			roomArray.push(new Room03());
 			roomArray.push(new Room04());
 			roomArray.push(new Room05());
+			roomArray.push(new Room06());
 			roomIndex = 0;
 			
-			Global.HP = 6;
+			Global.MAX_HP = 3;
+			Global.HP = Global.MAX_HP;
 		}
 		
 		public function Render():void

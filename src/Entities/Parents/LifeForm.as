@@ -3,7 +3,7 @@ package Entities.Parents
 	
 	public class LifeForm extends Mover
 	{
-		public var hp:int;
+		public var hp:Number;
 		public var invincibility:int;
 		public var hurt:int;
 		
@@ -21,9 +21,9 @@ package Entities.Parents
 			state = NORMAL;
 		}
 		
-		public function GetHurtByObject(object:Mover, dmg:int = 1):void
+		public function GetHurtByObject(object:Mover, dmg:Number = 1):void
 		{
-			hp -= 1;
+			hp -= dmg;
 			if (hp > 0){
 				state = HURT_BOUNCE;
 				hurt = 7;

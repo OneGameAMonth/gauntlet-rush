@@ -1,9 +1,11 @@
 package Areas 
 {
 	import Entities.Enemies.*;
-	import Entities.Portcullis;
+	import Entities.Items.Portcullis;
 	import Entities.Player;
 	import Entities.Tile;
+	import Entities.Items.HeartContainer;
+	import Entities.Items.SavePoint;
 	
 	public class Room05 extends Room
 	{
@@ -11,22 +13,6 @@ package Areas
 		public function Room05() 
 		{
 			super(320, 240, 1);
-			//create portculli
-			entities.push(new Portcullis(6*16, 0, 0));
-			portcullisIndex = entities.length-1;
-			entities.push(new Portcullis(6*16, (height/16-1)*16, 1));
-			
-			entities.push(new Player(10*16-8, (height/16-2)*16));
-			playerIndex = entities.length-1;
-			
-			//create enemies
-			entities.push(new Gohma(width/2-24, height/2-16));
-			enemyCount = 1;
-			
-			entities.push(new StoneStatue(3*16, 5*16, 0, 0));
-			entities.push(new StoneStatue(16*16, 5*16, 0, 1));
-			entities.push(new StoneStatue(5*16, 11*16, 0, 0));
-			entities.push(new StoneStatue(14*16, 11*16, 0, 1));
 			
 			//CREATE MORE SOLIDS
 			for (var i:int = 1; i < 14; i++){
@@ -46,5 +32,35 @@ package Areas
 				}
 			}
 		}		
+		
+		override public function CreateEntities():void
+		{
+			super.CreateEntities();
+			//create portculli
+			entities.push(new Portcullis(6*16, 0, 0));
+			portcullisIndex = entities.length-1;
+			entities.push(new Portcullis(6*16, (height/16-1)*16, 1));
+			
+			entities.push(new Player(10*16-8, (height/16-2)*16));
+			playerIndex = entities.length-1;
+			
+			//create enemies
+			entities.push(new Gohma(width/2-24, height/2-16));
+			entities.push(new Keese(width/2, 64, true));
+			entities.push(new Keese(width/2, 64, true));
+			entities.push(new Keese(width/2, 64, true));
+			entities.push(new Keese(width/2, 64, true));
+			entities.push(new Keese(width/2, 64, true));
+			enemyCount = 6;
+			
+			entities.push(new StoneStatue(3*16, 5*16, 0, 0));
+			entities.push(new StoneStatue(16*16, 5*16, 0, 1));
+			entities.push(new StoneStatue(3*16, 9*16, 0, 0));
+			entities.push(new StoneStatue(16*16, 9*16, 0, 1));
+			
+			//create items
+			entities.push(new HeartContainer(width/2, height/2));
+			entities.push(new SavePoint(13*16+6, 16+6));
+		}
 	}
 }

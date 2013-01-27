@@ -27,6 +27,13 @@ package Entities.Enemies
 			invincibility = 30;
 			this.scale = scale;
 			lb*=scale; tb*=scale; rb*=scale; bb*=scale;
+			
+			atkPow = 0.5;
+			if (scale == 1){ 
+				canBeKilled = true; 
+				atkPow = 1;
+			}
+			else canBeBlocked = false;
 		}
 		
 		override public function Update(entities:Array, map:Array):void
