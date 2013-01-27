@@ -101,6 +101,7 @@ package Entities
 				UpdateFacingWithVelocity();
 			if (state == ROLL_ATTACK){
 				if (hitSomething){
+					SoundManager.getInstance().playSfx("ThudSound", 0, 1);
 					state = NORMAL;
 					rest = 5;
 					vel.x = 0;
@@ -110,6 +111,8 @@ package Entities
 				}
 			}if (state == SPIN_SWORD_ATTACK || spinSword > 0){
 				if (spinSword < 40 || spinSword%3 == 0) NextFacing();
+				if (spinSword <= 40 && spinSword%6 == 0) 
+					SoundManager.getInstance().playSfx("SwordSound", 0, 1);
 				spinSword++;
 				if (spinSword == 40){
 					state = NORMAL;
@@ -134,7 +137,6 @@ package Entities
 		
 		public function InteractWithEntities(entities:Array):void
 		{
-			if (invincibility > 0 || hurt > 0) return;
 			for (var i:int = 0; i < entities.length; i++){
 				if (entities[i] is PlayerSword){
 					if (entities[i].hitEnemy){
@@ -151,47 +153,52 @@ package Entities
 						}
 					}
 				}
-				else if (entities[i] is Enemy){
+				else if (entities[i] is Enemy && !(invincibility > 0 || hurt > 0)){
 					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb)){
 						if (entities[i].hurt <= 0 && entities[i].invincibility <= 0)
 						GetHurtByObject(entities[i], entities[i].atkPow);
 						break;
 					}
 				}else if (entities[i] is Projectile){
-					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb)){
-						if (!TryToKillProjectile(entities[i])){
+					TryToKillProjectile(entities[i]);
+					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb)
+						&& !entities[i].delete_me && !(invincibility > 0 || hurt > 0)){
 							GetHurtByObject(entities[i], entities[i].atkPow);
 							entities[i].delete_me = true;
-							break;
-						}
-						entities[i].delete_me = true;
 					}
 				}
 			}
 		}
 		
-		public function TryToKillProjectile(projectile:Projectile):Boolean
-		{
-			if (projectile.delete_me) return true;
-			else if (!projectile.canBeBlocked) return false;
-			var px:Number = projectile.x;
-			var py:Number = projectile.y;
+		public function TryToKillProjectile(p:Projectile):void
+		{			
+			var killProjectile:Boolean = false;
+			if (state == NORMAL && p.canBeBlocked && swordCharge <= 0){
+				if (facing == Global.RIGHT && (p.facing == Global.LEFT || p.facing == -1) &&
+						CheckRectIntersect(p, x+rb+vel.x, y+tb, x+rb+vel.x, y+bb))
+					killProjectile = true;
+				else if (facing == Global.LEFT && (p.facing == Global.RIGHT || p.facing == -1) &&
+						CheckRectIntersect(p, x+lb+vel.x, y+tb, x+lb+vel.x, y+bb))
+					killProjectile = true;
+				else if (facing == Global.UP && (p.facing == Global.DOWN || p.facing == -1) &&
+						CheckRectIntersect(p, x+lb, y+tb+vel.y, x+rb, y+bb+vel.y))
+					killProjectile = true;
+				else if (facing == Global.DOWN && (p.facing == Global.UP || p.facing == -1) &&
+						CheckRectIntersect(p, x+lb, y+bb+vel.y, x+rb, y+bb+vel.y))
+					killProjectile = true;
+			}
 			
-			if (state == NORMAL){
-				if (py >= y-4 && py <= y+bb+4){
-					if (px > x && facing == Global.RIGHT) return true;
-					else if (px < x && facing == Global.LEFT) return true;
-				}else if (px >= x-4 && px <= x+rb+4){
-					if (py > y && facing == Global.DOWN) return true;
-					else if (py < y && facing == Global.UP) return true;
-				}
-			}return false;
+			if (killProjectile){
+				p.delete_me = true;
+				SoundManager.getInstance().playSfx("ShieldSound", 0, 1);
+			}
 		}
 		
 		override public function GetHurtByObject(object:Mover, dmg:Number = 1):void
 		{
 			Global.HP -= dmg;
 			if (Global.HP > 0){
+				SoundManager.getInstance().playSfx("HurtSound", 0, 1);
 				state = HURT_BOUNCE;
 				spinSword = 0;
 				hurt = 7;
@@ -217,6 +224,7 @@ package Entities
 			}
 			else{
 				trace("Player has died!");
+				SoundManager.getInstance().playSfx("DieSound", 0, 1);
 			}
 		}
 		

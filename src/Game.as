@@ -15,6 +15,36 @@ package
 		public static var roomArray:Array;
 		public static var roomIndex:int;
 		
+		//sound loading...
+		[Embed(source = 'resources/sounds/LOZ_Hit.mp3')]
+		private var Hit_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Hurt.mp3')]
+		private var Hurt_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Kill.mp3')]
+		private var Kill_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Shield.mp3')]
+		private var Shield_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Sword.mp3')]
+		private var Sword_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Boss_Scream2.mp3')]
+		private var Boss_scream2_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Die.mp3')]
+		private var Die_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Get_Item.mp3')]
+		private var Get_item_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Unlock.mp3')]
+		private var Unlock_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Bomb_Blow.mp3')]
+		private var Bomb_blow_sound:Class;
+		[Embed(source = 'resources/sounds/rollSound.mp3')]
+		private var Roll_sound:Class;
+		[Embed(source = 'resources/sounds/thudSound.mp3')]
+		private var Thud_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_MagicalRod.mp3')]
+		private var MagicalRod_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Get_Rupee.mp3')]
+		private var Get_Rupee_sound:Class;
+		
 		public function Game() 
 		{
 			trace("Game created");
@@ -33,6 +63,22 @@ package
 			
 			Global.MAX_HP = 3;
 			Global.HP = Global.MAX_HP;
+			
+			//loading sounds
+			SoundManager.getInstance().addSfx(new Hit_sound(), "HitSound");
+			SoundManager.getInstance().addSfx(new Hurt_sound(), "HurtSound");
+			SoundManager.getInstance().addSfx(new Kill_sound(), "KillSound");
+			SoundManager.getInstance().addSfx(new Shield_sound(), "ShieldSound");
+			SoundManager.getInstance().addSfx(new Sword_sound(), "SwordSound");
+			SoundManager.getInstance().addSfx(new Boss_scream2_sound(), "BossScream2Sound");
+			SoundManager.getInstance().addSfx(new Die_sound(), "DieSound");
+			SoundManager.getInstance().addSfx(new Get_item_sound(), "GetItemSound");
+			SoundManager.getInstance().addSfx(new Unlock_sound(), "UnlockSound");
+			SoundManager.getInstance().addSfx(new Bomb_blow_sound(), "BombBlowSound");
+			SoundManager.getInstance().addSfx(new Roll_sound(), "RollSound");
+			SoundManager.getInstance().addSfx(new Thud_sound(), "ThudSound");
+			SoundManager.getInstance().addSfx(new MagicalRod_sound(), "MagicalRodSound");
+			SoundManager.getInstance().addSfx(new Get_Rupee_sound(), "GetRupeeSound");
 		}
 		
 		public function Render():void

@@ -27,6 +27,7 @@ package Entities.Items
 					if (CheckRectIntersect(entities[i], x, y, x+rb, y+bb)){
 						Global.MAX_HP += 1;
 						Global.HP = Global.MAX_HP;
+						SoundManager.getInstance().playSfx("GetItemSound", 0, 1);
 						delete_me = true;
 					}
 				}

@@ -25,6 +25,7 @@ package Entities.Parents
 		{
 			hp -= dmg;
 			if (hp > 0){
+				SoundManager.getInstance().playSfx("HitSound", 0, 1);
 				state = HURT_BOUNCE;
 				hurt = 7;
 				invincibility = 20;
@@ -37,6 +38,7 @@ package Entities.Parents
 				else if (ofacing == Global.DOWN || ofacing == Global.DOWNLEFT) vel.y = 6.0;
 			}
 			else{
+				SoundManager.getInstance().playSfx("KillSound", 0, 1);
 				delete_me = true;
 			}
 		}

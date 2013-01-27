@@ -27,10 +27,15 @@ package Entities.Items
 			for(var i:int = 0; i < entities.length; i++){
 				if (entities[i] is Player)
 				{
-					if (CheckRectIntersect(entities[i], x, y, x+rb, y+bb)){
-						if (!Save.CAN_SAVE) trace("Game Saved!");
-						Save.CAN_SAVE = true;
-					}else Save.CAN_SAVE = false;
+					if (CheckRectIntersect(entities[i], x, y, x+rb, y+bb) &&
+							(Save.ROOM_INDEX != Game.roomIndex || Save.MAX_HP != Global.MAX_HP))
+					{
+						trace("Game Saved!");
+						SoundManager.getInstance().playSfx("GetRupeeSound", 0, 1);
+						Save.ROOM_INDEX = Game.roomIndex;
+						Save.MAX_HP = Global.MAX_HP;
+						Save.HP = Global.MAX_HP;
+					}
 				}
 			}
 			

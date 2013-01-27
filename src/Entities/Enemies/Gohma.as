@@ -49,6 +49,7 @@ package Entities.Enemies
 				fireCounter = Math.floor(Math.random()*20)+80;
 				for (var i:int = 0; i < entities.length; i++){
 					if (entities[i] is Player && entities[i].y > y+bb){
+						SoundManager.getInstance().playSfx("BombBlowSound", 0, 1);
 						entities.push(new Fireball(x+32, y+8, entities[i].x, entities[i].y, 2));
 						return;
 					}
@@ -62,8 +63,10 @@ package Entities.Enemies
 			hp -= 1;
 			if (hp > 0){
 				invincibility = 20;
+				SoundManager.getInstance().playSfx("HitSound", 0, 1);
 			}
 			else{
+				SoundManager.getInstance().playSfx("BossScream2Sound", 0, 1);
 				delete_me = true;
 			}
 		}

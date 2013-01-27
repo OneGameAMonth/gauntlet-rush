@@ -110,6 +110,7 @@ package Areas
 			if (playerIndex >= 0) PlayerInput(entities[playerIndex]);
 			playerIndex = -1;
 			if (enemyCount <= 0 && portcullisIndex >= 0){
+				SoundManager.getInstance().playSfx("UnlockSound", 0, 1);
 				entities.push(new ToNextRoom(
 					entities[portcullisIndex].x, entities[portcullisIndex].y-16));
 				entities.splice(portcullisIndex, 1);
@@ -123,6 +124,7 @@ package Areas
 							entities.push(new EnemyDie(entities[i].x+32, entities[i].y+8, 2));
 							
 							if (portcullisIndex >= 0){
+								SoundManager.getInstance().playSfx("UnlockSound", 0, 1);
 								entities.push(new ToNextRoom(
 									entities[portcullisIndex].x, entities[portcullisIndex].y-16));
 								entities.splice(portcullisIndex, 1);
@@ -162,15 +164,10 @@ package Areas
 		}
 		
 		public function PlayerInput(player:Player):void
-		{
-			if (Save.CAN_SAVE){
-				Save.ROOM_INDEX = Game.roomIndex;
-				Save.MAX_HP = Global.MAX_HP;
-				Save.HP = Global.HP;
-			}
-			
+		{			
 			if (player.rest > 0 || player.state == LifeForm.HURT_BOUNCE) return;
 			if (Global.CheckKeyPressed(Global.P_Z_KEY) && player.state != Player.SPIN_SWORD_ATTACK && player.noSwordCounter <= 0){
+				SoundManager.getInstance().playSfx("SwordSound", 0, 1);
 				if (player.state == LifeForm.NORMAL){
 					player.vel.x = 0;
 					player.vel.y = 0;
@@ -188,7 +185,11 @@ package Areas
 					new PlayerSword(player.x-16, player.y-16, player.facing));
 				player.state = Player.SWORD_ATTACK;
 			}if (Global.CheckKeyDown(Global.P_Z_KEY) && player.swordCharge > 0  && player.noSwordCounter <= 0){
-				if (player.swordCharge < 60) player.swordCharge++;
+				if (player.swordCharge < 60){
+					player.swordCharge++;
+					if (player.swordCharge == 15)
+						SoundManager.getInstance().playSfx("MagicalRodSound", 0, 1);
+				}
 			}else if (player.state == LifeForm.NORMAL){
 				if (player.swordCharge >= 15){
 					player.spinSword = 0;
@@ -200,6 +201,7 @@ package Areas
 			}
 			if (Global.CheckKeyPressed(Global.P_X_KEY) && player.state == LifeForm.NORMAL){
 				if ((player.vel.x != 0 || player.vel.y != 0) && player.rollRest <= 0){
+					SoundManager.getInstance().playSfx("RollSound", 0, 1);
 					var rollVert:Boolean, rollHor:Boolean;
 					rollHor = (player.swordCharge <= 0 || (player.facing != Global.LEFT && player.facing != Global.RIGHT));
 					rollVert = (player.swordCharge <= 0 || (player.facing != Global.UP && player.facing != Global.DOWN));

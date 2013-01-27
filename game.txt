@@ -5,6 +5,7 @@ To save on time, make the game short (ten areas?) But challenging (not nintendo 
 "Why won't you leave me alone!?"
 for a girl it becomes increasingly evident that she has no interest in you
 
+0.Make non shield sprite for when charging up sword
 1. Create other monsters and set up the levels.
 2. Add story opening, end, and between levels (zelda dialogue)
 3. HUD points. Also institute point system??? (Display "Level 01")

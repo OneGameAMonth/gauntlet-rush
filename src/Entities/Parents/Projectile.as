@@ -12,6 +12,7 @@ package Entities.Parents
 			atkPow = 1;
 			canBeKilled = false;
 			canBeBlocked = true;
+			facing = -1;
 		}		
 	}
 }

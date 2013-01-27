@@ -27,6 +27,7 @@ package Entities.Enemies
 			hp = 2;
 			randTimer = 0;
 			stopCounter = 0;
+			atkPow = 0.5;
 			
 			currAniX = 2;
 		}
