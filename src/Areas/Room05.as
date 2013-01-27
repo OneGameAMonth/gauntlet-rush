@@ -1,18 +1,34 @@
 package Areas 
 {
+	import Entities.*;
 	import Entities.Enemies.*;
-	import Entities.Items.Portcullis;
-	import Entities.Player;
-	import Entities.Tile;
-	import Entities.Items.HeartContainer;
-	import Entities.Items.SavePoint;
+	import Entities.Items.*;
+	import Entities.Enemies.EnemyDie;
+	import Entities.Parents.LifeForm;
+	import Entities.Parents.Enemy;
+	import Entities.Parents.Projectile;
+	import Entities.Dialogue.Dialogue;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.Sprite;
+	import flash.geom.Rectangle;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.utils.*;
+	import Entities.Dialogue.LinkMidDialogue;
 	
 	public class Room05 extends Room
 	{
+		public var displayedDialogue:Boolean;
+		public var displayingDialogue:Boolean;
+		public var bossDead:Boolean;
 		
 		public function Room05() 
 		{
 			super(320, 240, 1);
+			displayedDialogue = false;
+			displayingDialogue = false;
+			bossDead = false;
 			
 			//CREATE MORE SOLIDS
 			for (var i:int = 1; i < 14; i++){
@@ -59,8 +75,67 @@ package Areas
 			entities.push(new StoneStatue(16*16, 9*16, 0, 1));
 			
 			//create items
-			entities.push(new HeartContainer(width/2, height/2));
+			entities.push(new CloudDisappear(width/2-8, height/2));
+			entities.push(new HeartContainer(width/2+3-8, height/2+3));
+			entities.push(new CloudDisappear(13*16, 16));
 			entities.push(new SavePoint(13*16+6, 16+6));
+		}
+		
+		override public function Update():void
+		{
+			if (playerIndex >= 0) PlayerInput(entities[playerIndex]);
+			playerIndex = -1;
+			if (enemyCount <= 0 && portcullisIndex >= 0){
+				SoundManager.getInstance().playSfx("UnlockSound", 0, 1);
+				entities.push(new ToNextRoom(
+					entities[portcullisIndex].x, entities[portcullisIndex].y-16));
+				entities.splice(portcullisIndex, 1);
+				portcullisIndex = -1;
+			}
+			
+			var heartIndex:int = -1;
+			for (var i:int = entities.length-1; i >= 0; i--){
+				if ((entities[i] is Enemy || entities[i] is StoneStatue || entities[i] is Projectile) && displayingDialogue) continue;
+				entities[i].Update(entities, map);
+				if (entities[i] is Dialogue && killDialogue){ 
+					entities.splice(i, 1);
+					displayingDialogue = false;
+					continue;
+				}
+				if (entities[i].delete_me || 
+						(bossDead && (entities[i] is Enemy || entities[i] is Projectile))){
+					if (entities[i] is Enemy || entities[i] is Projectile){
+						if (entities[i] is Gohma){
+							bossDead = true;
+							entities.push(new EnemyDie(width/2-16, height/2-8, 2));
+							
+							if (portcullisIndex >= 0){
+								SoundManager.getInstance().playSfx("UnlockSound", 0, 1);
+								entities.push(new ToNextRoom(
+									entities[portcullisIndex].x, entities[portcullisIndex].y-16));
+								entities.splice(portcullisIndex, 1);
+								portcullisIndex = -1;
+							}
+						}
+						else entities.push(new EnemyDie(entities[i].x, entities[i].y));
+						if (entities[i] is Enemy) enemyCount--;
+					}
+					entities.splice(i, 1);
+				}
+				if (entities[i] is Player) playerIndex = i;
+				if (entities[i] is HeartContainer || entities[i] is SavePoint || entities[i] is CloudDisappear){
+					if (portcullisIndex < 0) entities[i].visible = true;
+					if (entities[i] is HeartContainer) heartIndex = i;
+				}
+			}
+			if (heartIndex < 0 && !displayedDialogue){
+				entities.push(new LinkMidDialogue());
+				displayingDialogue = true;
+				displayedDialogue = true;
+			}
+			
+			if (playerIndex >= 0) UpdateView(entities[playerIndex]);
+			if (Global.HP <= 0) ReloadSaveGame();
 		}
 	}
 }

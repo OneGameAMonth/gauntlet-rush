@@ -30,7 +30,7 @@ package Entities.Enemies
 			frameDelay = 5;
 			topspeed = 1.5;
 			speed = topspeed;
-			hp = 5;
+			hp = 6;
 			timer = 0;
 			fireCounter = 10;
 		}

@@ -5,6 +5,7 @@ package Areas
 	import Entities.Items.Portcullis;
 	import Entities.Player;
 	import Entities.Items.SavePoint;
+	import Entities.Items.CloudDisappear;
 	
 	public class Room02 extends Room
 	{
@@ -58,6 +59,7 @@ package Areas
 			entities.push(new StoneStatue(width-32, height-32, 0, 1));
 			
 			//create items
+			entities.push(new CloudDisappear(13*16, 16));
 			entities.push(new SavePoint(13*16+6, 16+6));
 		}
 	}

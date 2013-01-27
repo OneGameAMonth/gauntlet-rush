@@ -59,6 +59,7 @@ package
 			roomArray.push(new Room04());
 			roomArray.push(new Room05());
 			roomArray.push(new Room06());
+			roomArray.push(new Room07());
 			roomIndex = 0;
 			
 			Global.MAX_HP = 3;

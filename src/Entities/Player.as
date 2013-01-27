@@ -257,11 +257,12 @@ package Entities
 				
 			if (state == NORMAL){ 
 				currAniX = 0;
+				if (swordCharge > 0) currAniX = 3
 				maxFrame = 2;
 				if (vel.x == 0 && vel.y == 0) frameDelay = 15;
 				else frameDelay = 7;
 			}else if (state == ROLL_ATTACK){ 
-				currAniX = 3;
+				currAniX = 5;
 				maxFrame = 4;
 				frameDelay = 3;
 				rollRest = 5;

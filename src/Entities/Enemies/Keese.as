@@ -1,11 +1,18 @@
 package Entities.Enemies 
 {
 	import Entities.Parents.Enemy;
+	import flash.geom.Matrix;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	
 	public class Keese extends Enemy
 	{
 		[Embed(source = '../../resources/images/keese_sheet.png')]
 		private var my_sprite_sheet:Class;
+		[Embed(source = '../../resources/images/keese_hurt_sheet.png')]
+		private var hurt_sprite_sheet:Class;
+		[Embed(source = '../../resources/images/keese_hurt2_sheet.png')]
+		private var hurt2_sprite_sheet:Class;
 		
 		public var timer:int;
 		public var add:int;
@@ -29,7 +36,32 @@ package Entities.Enemies
 			
 			atkPow = 0.5;
 			this.hyper = hyper;
-			if (hyper) currAniY = 1;
+			if (hyper){
+				currAniY = 1;
+				hp = 2;
+			}
+		}
+		
+		override public function Render(levelRenderer:BitmapData):void
+		{
+			if (!visible) return;
+			
+			sprite_sheet = my_sprite_sheet;
+			if (invincibility > 0){
+				if ((invincibility >= 4 && invincibility <= 8) || (invincibility >= 12 && invincibility <= 16) || 
+					(invincibility >= 20 && invincibility <= 24) || (invincibility >= 28 && invincibility <= 32) || 
+					(invincibility >= 36 && invincibility <= 40))
+					sprite_sheet = hurt2_sprite_sheet;
+				else sprite_sheet = hurt_sprite_sheet;
+			}
+			
+			var temp_image:Bitmap = new Bitmap(new BitmapData(frameWidth, frameHeight));
+			var temp_sheet:Bitmap = new sprite_sheet();
+			DrawSpriteFromSheet(temp_image, temp_sheet);
+			
+			var matrix:Matrix = new Matrix();
+			matrix.translate(x, y);
+			levelRenderer.draw(image_sprite, matrix);
 		}
 		
 		override public function UpdateScript(entities:Array, map:Array):void

@@ -7,6 +7,7 @@ package Areas
 	import Entities.Parents.LifeForm;
 	import Entities.Parents.Enemy;
 	import Entities.Parents.Projectile;
+	import Entities.Dialogue.Dialogue;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
@@ -30,6 +31,7 @@ package Areas
 		protected var tile_set:Class;
 		
 		protected var HUD_sprite:Sprite;
+		protected var killDialogue:Boolean;
 		
 		public var map:Array;
 		public var entities:Array;
@@ -46,6 +48,7 @@ package Areas
 			_id = id;
 			this.width = width;
 			this.height = height;
+			killDialogue = false;
 			
 			map = [];
 			for (var i:int = 0; i < height/16; i++){
@@ -75,6 +78,7 @@ package Areas
 			LevelRenderer.lock();
 			LevelRenderer.fillRect(new Rectangle(0, 0, LevelRenderer.width, LevelRenderer.height), 0x000000);
 			
+			var dialogue:Array = [];
 			var i:int, j:int;
 			var tile_sheet:Bitmap = new tile_set();
 			for (i = 0; i < map.length; i++){
@@ -88,7 +92,10 @@ package Areas
 						new Point(draw_x, draw_y));
 				}
 			}for(i = entities.length-1; i >= 0; i--){
-				entities[i].Render(LevelRenderer);
+				if (entities[i] is Dialogue) dialogue.push(entities[i]);
+				else entities[i].Render(LevelRenderer);
+			}for (i = dialogue.length-1; i >= 0; i--){
+				dialogue[i].Render(LevelRenderer);
 			}
 			
 			
@@ -116,28 +123,22 @@ package Areas
 				entities.splice(portcullisIndex, 1);
 				portcullisIndex = -1;
 			}
+			
 			for (var i:int = entities.length-1; i >= 0; i--){
 				entities[i].Update(entities, map);
+				if (entities[i] is Dialogue && killDialogue){ 
+					entities.splice(i, 1);
+					continue;
+				}
 				if (entities[i].delete_me){
 					if (entities[i] is Enemy || entities[i] is Projectile){
-						if (entities[i] is Gohma){
-							entities.push(new EnemyDie(entities[i].x+32, entities[i].y+8, 2));
-							
-							if (portcullisIndex >= 0){
-								SoundManager.getInstance().playSfx("UnlockSound", 0, 1);
-								entities.push(new ToNextRoom(
-									entities[portcullisIndex].x, entities[portcullisIndex].y-16));
-								entities.splice(portcullisIndex, 1);
-								portcullisIndex = -1;
-							}
-						}
-						else entities.push(new EnemyDie(entities[i].x, entities[i].y));
+						entities.push(new EnemyDie(entities[i].x, entities[i].y));
 						if (entities[i] is Enemy) enemyCount--;
 					}
 					entities.splice(i, 1);
 				}
 				if (entities[i] is Player) playerIndex = i;
-				if (entities[i] is HeartContainer || entities[i] is SavePoint){
+				if (entities[i] is HeartContainer || entities[i] is SavePoint || entities[i] is CloudDisappear){
 					if (portcullisIndex < 0) entities[i].visible = true;
 				}
 			}
@@ -164,7 +165,10 @@ package Areas
 		}
 		
 		public function PlayerInput(player:Player):void
-		{			
+		{	
+			if (Global.CheckKeyPressed(Global.P_X_KEY)) killDialogue = true;
+			else killDialogue = false;
+			
 			if (player.rest > 0 || player.state == LifeForm.HURT_BOUNCE) return;
 			if (Global.CheckKeyPressed(Global.P_Z_KEY) && player.state != Player.SPIN_SWORD_ATTACK && player.noSwordCounter <= 0){
 				SoundManager.getInstance().playSfx("SwordSound", 0, 1);

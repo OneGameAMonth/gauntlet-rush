@@ -29,11 +29,12 @@ package Entities.Enemies
 			lb*=scale; tb*=scale; rb*=scale; bb*=scale;
 			
 			atkPow = 0.5;
-			if (scale == 1){ 
+			if (scale == 1)
 				canBeKilled = true; 
+			else{ 
+				canBeBlocked = false;
 				atkPow = 1;
 			}
-			else canBeBlocked = false;
 		}
 		
 		override public function Update(entities:Array, map:Array):void
