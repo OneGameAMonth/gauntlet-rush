@@ -90,7 +90,7 @@ package Entities
 		}
 		
 		override public function Update(entities:Array, map:Array):void
-		{			
+		{		
 			if (Global.HP <= Global.MAX_HP/2){ 
 				lowHealthBeep -= 1;
 				if (lowHealthBeep <= 0){
@@ -151,7 +151,8 @@ package Entities
 			for (var i:int = 0; i < entities.length; i++){
 				if (entities[i] is PlayerSword){
 					if (entities[i].hitEnemy){
-						if (vel.x != 0 || vel.y != 0){
+						SoundManager.getInstance().playSfx("ThudSound", 0, 1);
+						if ((state != SWORD_ATTACK && state != SPIN_SWORD_ATTACK) || !(vel.x == 0 && vel.y == 0)){
 							vel.x *= -0.5;
 							vel.y *= -0.5;
 							state = ROLL_ATTACK;
@@ -159,8 +160,13 @@ package Entities
 							frameCount = 0;
 							swordCharge = 0;
 							spinSword = 0;
-							entities[i].visible = false;
+							entities[i].x = x-16+vel.x;
+							entities[i].y = y-16+vel.y;
 							entities[i].delete_me = true;
+						}else if (state == SWORD_ATTACK && vel.x == 0 && vel.y == 0){
+							swordCharge = -1;
+							entities[i].delete_me = true;
+							rest = 10;
 						}
 					}
 				}

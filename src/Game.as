@@ -53,6 +53,8 @@ package
 		private var Select_sound:Class;
 		[Embed(source = 'resources/sounds/OOT_LowHealth.mp3')]
 		private var LowHealth_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Get_Heart.mp3')]
+		private var GetHeart_sound:Class;
 		
 		public function Game() 
 		{
@@ -71,7 +73,8 @@ package
 			roomArray.push(new Room06());
 			roomArray.push(new Room07());
 			roomArray.push(new Room08());
-			roomIndex = 7;
+			roomArray.push(new Room09());
+			roomIndex = 0;
 			
 			Global.MAX_HP = 3;
 			Global.HP = Global.MAX_HP;
@@ -95,6 +98,7 @@ package
 			SoundManager.getInstance().addSfx(new Text_sound(), "TextSound");
 			SoundManager.getInstance().addSfx(new Select_sound(), "SelectSound");
 			SoundManager.getInstance().addSfx(new LowHealth_sound(), "LowHealthSound");
+			SoundManager.getInstance().addSfx(new GetHeart_sound(), "GetHeartSound");
 		}
 		
 		public function Render():void

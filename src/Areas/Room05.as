@@ -3,7 +3,6 @@ package Areas
 	import Entities.*;
 	import Entities.Enemies.*;
 	import Entities.Items.*;
-	import Entities.Enemies.EnemyDie;
 	import Entities.Parents.LifeForm;
 	import Entities.Parents.Enemy;
 	import Entities.Parents.Projectile;
@@ -113,7 +112,7 @@ package Areas
 					if (entities[i] is Enemy || entities[i] is Projectile){
 						if (entities[i] is Gohma){
 							bossDead = true;
-							entities.push(new EnemyDie(width/2-16, height/2-8, 2));
+							entities.push(new EnemyDie(width/2-16, height/2-8, false, 2));
 							
 							if (portcullisIndex >= 0){
 								SoundManager.getInstance().playSfx("UnlockSound", 0, 1);
@@ -123,7 +122,8 @@ package Areas
 								portcullisIndex = -1;
 							}
 						}
-						else entities.push(new EnemyDie(entities[i].x, entities[i].y));
+						else if (entities[i] is Enemy) entities.push(new EnemyDie(entities[i].x, entities[i].y, false));
+						else if (entities[i] is Projectile) entities.push(new EnemyDie(entities[i].x, entities[i].y , true));
 						if (entities[i] is Enemy) enemyCount--;
 					}
 					entities.splice(i, 1);

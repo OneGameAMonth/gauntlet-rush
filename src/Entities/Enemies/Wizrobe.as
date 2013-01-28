@@ -63,13 +63,15 @@ package Entities.Enemies
 		
 		override public function Render(levelRenderer:BitmapData):void
 		{
-			if (!visible){
-				if ((invisTimer <= 3) || (invisTimer >= 5 && invisTimer <= 7) 
-					|| (invisTimer >= 9 && invisTimer <= 12) || (invisTimer >= 15 && invisTimer <= 18)){}
-				else return;
+			if (invincibility <= 0){
+				if (!visible){
+					if ((invisTimer <= 3) || (invisTimer >= 5 && invisTimer <= 7) 
+						|| (invisTimer >= 9 && invisTimer <= 12) || (invisTimer >= 15 && invisTimer <= 18)){}
+					else return;
+				}
+				else if ((visTimer <= 3) || (visTimer >= 5 && visTimer <= 7) 
+					|| (visTimer >= 9 && visTimer <= 12) || (visTimer >= 15 && visTimer <= 18)) return;
 			}
-			else if ((visTimer <= 3) || (visTimer >= 5 && visTimer <= 7) 
-				|| (visTimer >= 9 && visTimer <= 12) || (visTimer >= 15 && visTimer <= 18)) return;
 			
 			sprite_sheet = my_sprite_sheet;
 			if (invincibility > 0){

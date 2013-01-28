@@ -3,7 +3,7 @@ package Areas
 	import Entities.*;
 	import Entities.Items.*;
 	import Entities.Enemies.Gohma;
-	import Entities.Enemies.EnemyDie;
+	import Entities.Items.EnemyDie;
 	import Entities.Parents.LifeForm;
 	import Entities.Parents.Enemy;
 	import Entities.Parents.Projectile;
@@ -132,14 +132,16 @@ package Areas
 					continue;
 				}
 				if (entities[i].delete_me){
-					if (entities[i] is Enemy || entities[i] is Projectile){
-						entities.push(new EnemyDie(entities[i].x, entities[i].y));
-						if (entities[i] is Enemy) enemyCount--;
+					if (entities[i] is Enemy){
+						entities.push(new EnemyDie(entities[i].x, entities[i].y, false));
+						enemyCount--;
+					}else if (entities[i] is Projectile){
+						entities.push(new EnemyDie(entities[i].x, entities[i].y, true));
 					}
 					entities.splice(i, 1);
 				}
 				if (entities[i] is Player) playerIndex = i;
-				if (entities[i] is HeartContainer || entities[i] is SavePoint || entities[i] is CloudDisappear){
+				if (entities[i] is HeartContainer || entities[i] is SavePoint || entities[i] is CloudDisappear || entities[i] is Fairy){
 					if (portcullisIndex < 0) entities[i].visible = true;
 				}
 			}
@@ -188,7 +190,6 @@ package Areas
 						player.vel.y = 0;
 						player.frameCount = 0;
 					}else if (player.state == Player.ROLL_ATTACK){
-						if (player.currFrame < 1) return;
 						player.vel.x *= 1.5;
 						player.vel.y *= 1.5;
 						player.frameCount = 1;

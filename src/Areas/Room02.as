@@ -6,6 +6,7 @@ package Areas
 	import Entities.Player;
 	import Entities.Items.SavePoint;
 	import Entities.Items.CloudDisappear;
+	import Entities.Items.Fairy;
 	
 	public class Room02 extends Room
 	{
@@ -61,6 +62,8 @@ package Areas
 			//create items
 			entities.push(new CloudDisappear(13*16, 16));
 			entities.push(new SavePoint(13*16+6, 16+6, 5));
+			entities.push(new CloudDisappear(6*16, 16));
+			entities.push(new Fairy(6*16, 16));
 		}
 	}
 }
