@@ -75,10 +75,15 @@ package Areas
 			entities.push(new StoneStatue(16*16, 9*16, 0, 1));
 			
 			//create items
+			ReloadHearts();
+			entities.push(new CloudDisappear(13*16, 16));
+			entities.push(new SavePoint(13*16+6, 16+6, 6));
+		}
+		
+		override public function ReloadHearts():void
+		{
 			entities.push(new CloudDisappear(width/2-8, height/2));
 			entities.push(new HeartContainer(width/2+3-8, height/2+3));
-			entities.push(new CloudDisappear(13*16, 16));
-			entities.push(new SavePoint(13*16+6, 16+6));
 		}
 		
 		override public function Update():void
@@ -99,6 +104,7 @@ package Areas
 				entities[i].Update(entities, map);
 				if (entities[i] is Dialogue && killDialogue){ 
 					entities.splice(i, 1);
+					SoundManager.getInstance().playSfx("TextSound", 0, 1);
 					displayingDialogue = false;
 					continue;
 				}

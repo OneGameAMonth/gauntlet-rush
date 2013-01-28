@@ -18,6 +18,8 @@ package Entities
 		public var spinSword:int;
 		public var noSwordCounter:int;
 		
+		public var lowHealthBeep:int;
+		
 		public static const SWORD_ATTACK:int = 2;
 		public static const SPIN_SWORD_ATTACK:int = 3;
 		public static const ROLL_ATTACK:int = 4;
@@ -40,6 +42,7 @@ package Entities
 			swordCharge = 0;
 			spinSword = 0;
 			noSwordCounter = 0;
+			lowHealthBeep = 0;
 		}
 		
 		public function Restart(x:Number, y:Number, facing:int):void
@@ -88,6 +91,14 @@ package Entities
 		
 		override public function Update(entities:Array, map:Array):void
 		{			
+			if (Global.HP <= Global.MAX_HP/2){ 
+				lowHealthBeep -= 1;
+				if (lowHealthBeep <= 0){
+					lowHealthBeep = 25;
+					SoundManager.getInstance().playSfx("LowHealthSound", 0, 1); 
+				}
+			}
+			
 			if (invincibility > 0) invincibility -= 1;
 			InteractWithEntities(entities);
 			UpdateMovement(entities, map);
@@ -155,8 +166,9 @@ package Entities
 				}
 				else if (entities[i] is Enemy && !(invincibility > 0 || hurt > 0)){
 					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb)){
-						if (entities[i].hurt <= 0 && entities[i].invincibility <= 0)
-						GetHurtByObject(entities[i], entities[i].atkPow);
+						if (entities[i].hurt <= 0 && entities[i].invincibility <= 0 && entities[i].visible){
+							GetHurtByObject(entities[i], entities[i].atkPow);
+						}
 						break;
 					}
 				}else if (entities[i] is Projectile){
@@ -175,16 +187,16 @@ package Entities
 			var killProjectile:Boolean = false;
 			if (state == NORMAL && p.canBeBlocked && swordCharge <= 0){
 				if (facing == Global.RIGHT && (p.facing == Global.LEFT || p.facing == -1) &&
-						CheckRectIntersect(p, x+rb+vel.x, y+tb, x+rb+vel.x, y+bb))
+						CheckRectIntersect(p, x+rb, y+tb-12, x+rb+vel.x+2, y+bb+12))
 					killProjectile = true;
 				else if (facing == Global.LEFT && (p.facing == Global.RIGHT || p.facing == -1) &&
-						CheckRectIntersect(p, x+lb+vel.x, y+tb, x+lb+vel.x, y+bb))
+						CheckRectIntersect(p, x+lb+vel.x-2, y+tb-12, x+lb, y+bb+12))
 					killProjectile = true;
 				else if (facing == Global.UP && (p.facing == Global.DOWN || p.facing == -1) &&
-						CheckRectIntersect(p, x+lb, y+tb+vel.y, x+rb, y+bb+vel.y))
+						CheckRectIntersect(p, x+lb-12, y+tb+vel.y-2, x+rb+12, y+tb))
 					killProjectile = true;
 				else if (facing == Global.DOWN && (p.facing == Global.UP || p.facing == -1) &&
-						CheckRectIntersect(p, x+lb, y+bb+vel.y, x+rb, y+bb+vel.y))
+						CheckRectIntersect(p, x+lb-12, y+bb+2, x+rb+12, y+bb+vel.y))
 					killProjectile = true;
 			}
 			
@@ -270,7 +282,6 @@ package Entities
 				currAniX = 2;
 				maxFrame = 1;
 				frameDelay = 7;
-				rest = 1;
 			}else if (state == HURT_BOUNCE){
 				currAniX = 0;
 				maxFrame = 2;

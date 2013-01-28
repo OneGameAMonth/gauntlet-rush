@@ -60,7 +60,7 @@ package Areas
 			
 			//create items
 			entities.push(new CloudDisappear(13*16, 16));
-			entities.push(new SavePoint(13*16+6, 16+6));
+			entities.push(new SavePoint(13*16+6, 16+6, 5));
 		}
 	}
 }

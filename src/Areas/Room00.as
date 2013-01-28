@@ -18,7 +18,7 @@ package Areas
 		public function Room00() 
 		{
 			super(320, 240, 1);
-			dialogueTimer = 20;
+			dialogueTimer = 30;
 			
 			entities.push(new ZeldaIntro(width/2-8, height/2-64));
 			entities.push(new ZeldaIntroDialogue());
@@ -43,10 +43,15 @@ package Areas
 			enemyCount = 1;
 			
 			//create items
+			ReloadHearts();
+			entities.push(new CloudDisappear(13*16, 16));
+			entities.push(new SavePoint(13*16+6, 16+6, 4));
+		}
+		
+		override public function ReloadHearts():void
+		{
 			entities.push(new CloudDisappear(6*16, 16));
 			entities.push(new HeartContainer(6*16+3, 16+3));
-			entities.push(new CloudDisappear(13*16, 16));
-			entities.push(new SavePoint(13*16+6, 16+6));
 		}
 		
 		override public function Update():void

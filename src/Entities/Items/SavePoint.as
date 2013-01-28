@@ -7,8 +7,9 @@ package Entities.Items
 	{
 		[Embed(source = '../../resources/images/triforce_sheet.png')]
 		private var my_sprite_sheet:Class;
+		public var maxHP:int;
 		
-		public function SavePoint(x:int, y:int) 
+		public function SavePoint(x:int, y:int, maxHP:int) 
 		{
 			super(x, y, 0, 0, 10, 10);
 			sprite_sheet = my_sprite_sheet;
@@ -17,6 +18,7 @@ package Entities.Items
 			maxFrame = 2;
 			frameDelay = 7;
 			
+			this.maxHP = maxHP;
 			visible = false;
 		}
 		
@@ -35,6 +37,7 @@ package Entities.Items
 						Save.ROOM_INDEX = Game.roomIndex;
 						Save.MAX_HP = Global.MAX_HP;
 						Save.HP = Global.MAX_HP;
+						Save.POSSIBLE_MAX_HP = maxHP;
 					}
 				}
 			}

@@ -57,10 +57,15 @@ package Areas
 			entities.push(new Bubble(width/2, height/2));
 			
 			//create items
+			ReloadHearts();
+			entities.push(new CloudDisappear(13*16, 16));
+			entities.push(new SavePoint(13*16+6, 16+6, 5));
+		}
+		
+		override public function ReloadHearts():void
+		{
 			entities.push(new CloudDisappear(6*16, 16));
 			entities.push(new HeartContainer(6*16+3, 16+3));
-			entities.push(new CloudDisappear(13*16, 16));
-			entities.push(new SavePoint(13*16+6, 16+6));
 		}
 	}
 }

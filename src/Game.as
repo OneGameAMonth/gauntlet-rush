@@ -14,6 +14,7 @@ package
 		
 		public static var roomArray:Array;
 		public static var roomIndex:int;
+		public static var paused:Boolean;
 		
 		//sound loading...
 		[Embed(source = 'resources/sounds/LOZ_Hit.mp3')]
@@ -44,12 +45,21 @@ package
 		private var MagicalRod_sound:Class;
 		[Embed(source = 'resources/sounds/LOZ_Get_Rupee.mp3')]
 		private var Get_Rupee_sound:Class;
+		[Embed(source = 'resources/sounds/awakenSound.mp3')]
+		private var Awaken_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Text.mp3')]
+		private var Text_sound:Class;
+		[Embed(source = 'resources/sounds/selectSound.mp3')]
+		private var Select_sound:Class;
+		[Embed(source = 'resources/sounds/OOT_LowHealth.mp3')]
+		private var LowHealth_sound:Class;
 		
 		public function Game() 
 		{
 			trace("Game created");
 			Screen = new BitmapData(Global.stageWidth*Global.zoom, Global.stageHeight*Global.zoom, false, 0x000000);
 			screenBitmap = new Bitmap(Screen);
+			paused = false;
 			
 			roomArray = [];
 			roomArray.push(new Room00());
@@ -60,7 +70,8 @@ package
 			roomArray.push(new Room05());
 			roomArray.push(new Room06());
 			roomArray.push(new Room07());
-			roomIndex = 0;
+			roomArray.push(new Room08());
+			roomIndex = 7;
 			
 			Global.MAX_HP = 3;
 			Global.HP = Global.MAX_HP;
@@ -80,6 +91,10 @@ package
 			SoundManager.getInstance().addSfx(new Thud_sound(), "ThudSound");
 			SoundManager.getInstance().addSfx(new MagicalRod_sound(), "MagicalRodSound");
 			SoundManager.getInstance().addSfx(new Get_Rupee_sound(), "GetRupeeSound");
+			SoundManager.getInstance().addSfx(new Awaken_sound(), "AwakenSound");
+			SoundManager.getInstance().addSfx(new Text_sound(), "TextSound");
+			SoundManager.getInstance().addSfx(new Select_sound(), "SelectSound");
+			SoundManager.getInstance().addSfx(new LowHealth_sound(), "LowHealthSound");
 		}
 		
 		public function Render():void
@@ -91,7 +106,11 @@ package
 		
 		public function Update():void
 		{
-			roomArray[roomIndex].Update();
+			if (Global.CheckKeyPressed(Global.ENTER)){ 
+				Game.paused = !Game.paused;
+				SoundManager.getInstance().playSfx("SelectSound", 0, 1);
+			}
+			if (!paused) roomArray[roomIndex].Update();
 			
 			//clear out the "keys_up" array for next update
 			Global.keys_up = new Array();

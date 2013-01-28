@@ -128,6 +128,7 @@ package Areas
 				entities[i].Update(entities, map);
 				if (entities[i] is Dialogue && killDialogue){ 
 					entities.splice(i, 1);
+					SoundManager.getInstance().playSfx("TextSound", 0, 1);
 					continue;
 				}
 				if (entities[i].delete_me){
@@ -151,6 +152,10 @@ package Areas
 			CreateEntities();
 		}
 		
+		public function ReloadHearts():void
+		{
+		}
+		
 		public function ReloadSaveGame():void
 		{
 			Game.roomIndex = Save.ROOM_INDEX;
@@ -162,6 +167,10 @@ package Areas
 			for (var i:int = Game.roomIndex+1; i < Game.roomArray.length; i++){
 				Game.roomArray[i].Restart();
 			}
+			if (Save.MAX_HP < Save.POSSIBLE_MAX_HP){
+				Game.roomArray[Game.roomIndex].ReloadHearts();
+				trace("Reload hearts");
+			}
 		}
 		
 		public function PlayerInput(player:Player):void
@@ -170,24 +179,26 @@ package Areas
 			else killDialogue = false;
 			
 			if (player.rest > 0 || player.state == LifeForm.HURT_BOUNCE) return;
-			if (Global.CheckKeyPressed(Global.P_Z_KEY) && player.state != Player.SPIN_SWORD_ATTACK && player.noSwordCounter <= 0){
-				SoundManager.getInstance().playSfx("SwordSound", 0, 1);
-				if (player.state == LifeForm.NORMAL){
-					player.vel.x = 0;
-					player.vel.y = 0;
-					player.frameCount = 0;
-				}else if (player.state == Player.ROLL_ATTACK){
-					if (player.currFrame < 1) return;
-					player.vel.x *= 1.5;
-					player.vel.y *= 1.5;
-					player.frameCount = 1;
+			if (Global.CheckKeyPressed(Global.P_Z_KEY) && player.state != Player.SPIN_SWORD_ATTACK){
+				if (player.noSwordCounter > 0) SoundManager.getInstance().playSfx("HitSound", 0, 1);
+				else{
+					SoundManager.getInstance().playSfx("SwordSound", 0, 1);
+					if (player.state == LifeForm.NORMAL){
+						player.vel.x = 0;
+						player.vel.y = 0;
+						player.frameCount = 0;
+					}else if (player.state == Player.ROLL_ATTACK){
+						if (player.currFrame < 1) return;
+						player.vel.x *= 1.5;
+						player.vel.y *= 1.5;
+						player.frameCount = 1;
+					}
+					player.swordCharge = 1;
+					player.currFrame = 0;
+					entities.push(
+						new PlayerSword(player.x-16, player.y-16, player.facing));
+					player.state = Player.SWORD_ATTACK;
 				}
-				player.swordCharge = 1;
-				player.currFrame = 0;
-				player.rest = 1;
-				entities.push(
-					new PlayerSword(player.x-16, player.y-16, player.facing));
-				player.state = Player.SWORD_ATTACK;
 			}if (Global.CheckKeyDown(Global.P_Z_KEY) && player.swordCharge > 0  && player.noSwordCounter <= 0){
 				if (player.swordCharge < 60){
 					player.swordCharge++;
@@ -246,6 +257,15 @@ package Areas
 						player.vel.x = -p_speed;
 					}else player.vel.x = 0;
 				}
+			}else if (player.state == Player.SWORD_ATTACK){
+				if (Global.CheckKeyPressed(Global.P_DOWN))
+					player.facing = Global.DOWN;
+				else if (Global.CheckKeyPressed(Global.P_UP))
+					player.facing = Global.UP;
+				else if (Global.CheckKeyPressed(Global.P_RIGHT))
+					player.facing = Global.RIGHT;
+				else if (Global.CheckKeyPressed(Global.P_LEFT))
+					player.facing = Global.LEFT;
 			}
 		}
 		

@@ -1,11 +1,10 @@
 package Areas 
 {
 	import Entities.Enemies.*;
-	import Entities.Tile;
 	import Entities.Items.Portcullis;
-	import Entities.Items.SavePoint;
-	import Entities.Items.HeartContainer;
 	import Entities.Player;
+	import Entities.Items.SavePoint;
+	import Entities.Items.CloudDisappear;
 	
 	public class Room07 extends Room
 	{
@@ -13,11 +12,6 @@ package Areas
 		public function Room07() 
 		{
 			super(320, 240, 1);
-			
-			//CREATE SOLIDS
-			for (var i:int = 6; i < width/16-6; i++){
-				map[height/16-1][i] = new Tile(i*16, height-16, 1, 0, true);
-			}
 		}
 		
 		override public function CreateEntities():void
@@ -26,16 +20,24 @@ package Areas
 			//create portculli
 			entities.push(new Portcullis(6*16, 0, 0));
 			portcullisIndex = entities.length-1;
+			entities.push(new Portcullis(6*16-8, (height/16-1)*16, 1));
 			
 			entities.push(new Player(10*16-8, (height/16-2)*16));
 			playerIndex = entities.length-1;
 			
 			//create enemies
-			enemyCount = 1;
+			entities.push(new Armos(64, 64));
+			entities.push(new Armos(width-80, 64));
+			entities.push(new Armos(64, height-80));
+			entities.push(new Armos(width-80, height-80));
+			entities.push(new Wizrobe(width/2-8, height/2-8));
+			entities.push(new Rope(16, 16));
+			entities.push(new Rope(width-32, height-32));
+			enemyCount = 7;
 			
 			//create items
-			entities.push(new HeartContainer(6*16+3, 16+3));
-			entities.push(new SavePoint(13*16+6, 16+6));
+			entities.push(new CloudDisappear(13*16, 16));
+			entities.push(new SavePoint(13*16+6, 16+6, 6));
 		}
 	}
 }
