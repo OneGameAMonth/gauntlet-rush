@@ -7,6 +7,7 @@ package Entities.Items
 	{
 		[Embed(source = '../../resources/images/heart_sheet.png')]
 		private var my_sprite_sheet:Class;
+		private var aliveTimer:int;
 		
 		public function Heart(x:int, y:int) 
 		{
@@ -18,11 +19,19 @@ package Entities.Items
 			frameDelay = 3;
 			
 			visible = true;
+			aliveTimer = 120;
 		}
 		
 		override public function Update(entities:Array, map:Array):void
 		{
 			if (delete_me || !visible) return;
+			aliveTimer--;
+			if (aliveTimer <= 0){
+				delete_me = true;
+				return;
+			}else if (aliveTimer <= 30){
+				frameDelay = 2;
+			}
 			
 			for(var i:int = 0; i < entities.length; i++){
 				if (entities[i] is Player)

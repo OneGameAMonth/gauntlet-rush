@@ -1,6 +1,7 @@
 package Areas 
 {
 	import Entities.Enemies.*;
+	import Entities.Tile;
 	import Entities.Items.Portcullis;
 	import Entities.Player;
 	import Entities.Items.SavePoint;
@@ -13,6 +14,13 @@ package Areas
 		public function Room08()
 		{
 			super(320, 240, 1);
+			
+			//create solids!!!
+			for (var i:int = 0; i < 8; i++){
+				for (var j:int = 0; j < 7; j++){
+					map[4+j][6+i] = new Tile((6+i)*16, (4+j)*16, 1, 0, true);
+				}
+			}
 		}
 		
 		override public function CreateEntities():void
@@ -27,11 +35,11 @@ package Areas
 			playerIndex = entities.length-1;
 			
 			//create enemies
-			entities.push(new Darknut(64, height/2));
-			entities.push(new Darknut(width-80, height/2));
-			entities.push(new Wizrobe(width/2-8, 64));
-			entities.push(new Wizrobe(48, height-64));
-			entities.push(new Wizrobe(width-64, height-64));
+			entities.push(new Darknut(64, height/2-32));
+			entities.push(new Darknut(width-80, height/2-32));
+			entities.push(new Wizrobe(width/2-8, 32, 6*16, 4*16, 8*16, 6*16));
+			entities.push(new Wizrobe(48, height-64, 6*16, 4*16, 8*16, 6*16));
+			entities.push(new Wizrobe(width-64, height-64, 6*16, 4*16, 8*16, 6*16));
 			enemyCount = 5;
 			
 			entities.push(new StoneStatue(16, 16, 0, 0));

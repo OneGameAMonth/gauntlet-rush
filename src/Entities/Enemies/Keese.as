@@ -21,7 +21,7 @@ package Entities.Enemies
 		public var randMoveTimer:int;
 		public var hyper:Boolean
 		
-		public function Keese(x:int, y:int, hyper:Boolean = false) 
+		public function Keese(x:int, y:int, hyper:Boolean = false, atkPow:Number = 0.5) 
 		{
 			super(x, y, 2, 2, 14, 14);
 			sprite_sheet = my_sprite_sheet;
@@ -34,7 +34,7 @@ package Entities.Enemies
 			stopTimer = Math.floor(Math.random()*10)+20;
 			randMoveTimer = Math.floor(Math.random()*10)+10;
 			
-			atkPow = 0.5;
+			this.atkPow = atkPow;
 			this.hyper = hyper;
 			if (hyper){
 				currAniY = 1;

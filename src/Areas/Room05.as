@@ -98,7 +98,8 @@ package Areas
 			}
 			
 			var heartIndex:int = -1;
-			for (var i:int = entities.length-1; i >= 0; i--){
+			var i:int;
+			for (i = entities.length-1; i >= 0; i--){
 				if ((entities[i] is Enemy || entities[i] is StoneStatue || entities[i] is Projectile) && displayingDialogue) continue;
 				entities[i].Update(entities, map);
 				if (entities[i] is Dialogue && killDialogue){ 
@@ -128,20 +129,25 @@ package Areas
 					}
 					entities.splice(i, 1);
 				}
-				if (entities[i] is Player) playerIndex = i;
+				if (Global.HP <= 0 && !(entities[i] is Player)) entities.splice(i, 1);
 				if (entities[i] is HeartContainer || entities[i] is SavePoint || entities[i] is CloudDisappear){
 					if (portcullisIndex < 0) entities[i].visible = true;
 					if (entities[i] is HeartContainer) heartIndex = i;
 				}
-			}
-			if (heartIndex < 0 && !displayedDialogue){
+			}for (i = 0; i < entities.length; i++){ if (entities[i] is Player) playerIndex = i; }
+			if (heartIndex < 0 && !displayedDialogue && Global.HP > 0){
 				entities.push(new LinkMidDialogue());
 				displayingDialogue = true;
 				displayedDialogue = true;
 			}
 			
 			if (playerIndex >= 0) UpdateView(entities[playerIndex]);
-			if (Global.HP <= 0) ReloadSaveGame();
+			if (Global.HP <= 0){ 
+				if (playerIndex >= 0){ 
+					entities[playerIndex].StopAll();
+				}
+				ReloadSaveGame();
+			}
 		}
 	}
 }

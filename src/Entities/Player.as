@@ -91,7 +91,7 @@ package Entities
 		
 		override public function Update(entities:Array, map:Array):void
 		{		
-			if (Global.HP <= Global.MAX_HP/2){ 
+			if (Global.HP <= Global.MAX_HP/2 && Global.HP > 0){ 
 				lowHealthBeep -= 1;
 				if (lowHealthBeep <= 0){
 					lowHealthBeep = 25;
@@ -148,11 +148,13 @@ package Entities
 		
 		public function InteractWithEntities(entities:Array):void
 		{
+			if (Global.HP <= 0) return;
 			for (var i:int = 0; i < entities.length; i++){
 				if (entities[i] is PlayerSword){
 					if (entities[i].hitEnemy){
 						SoundManager.getInstance().playSfx("ThudSound", 0, 1);
-						if ((state != SWORD_ATTACK && state != SPIN_SWORD_ATTACK) || !(vel.x == 0 && vel.y == 0)){
+						if (state != SWORD_ATTACK || !(vel.x == 0 && vel.y == 0)){
+							if (state == SPIN_SWORD_ATTACK) continue;
 							vel.x *= -0.5;
 							vel.y *= -0.5;
 							state = ROLL_ATTACK;
@@ -170,17 +172,17 @@ package Entities
 						}
 					}
 				}
-				else if (entities[i] is Enemy && !(invincibility > 0 || hurt > 0)){
+				else if (entities[i] is Enemy && invincibility <= 0 && hurt <= 0){
 					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb)){
-						if (entities[i].hurt <= 0 && entities[i].invincibility <= 0 && entities[i].visible){
+						if (entities[i].visible){
 							GetHurtByObject(entities[i], entities[i].atkPow);
 						}
 						break;
 					}
-				}else if (entities[i] is Projectile){
+				}else if (entities[i] is Projectile && invincibility <= 0 && hurt <= 0){
 					TryToKillProjectile(entities[i]);
 					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb)
-						&& !entities[i].delete_me && !(invincibility > 0 || hurt > 0)){
+						&& !entities[i].delete_me){
 							GetHurtByObject(entities[i], entities[i].atkPow);
 							entities[i].delete_me = true;
 					}
@@ -302,6 +304,16 @@ package Entities
 				}
 				frameCount = 0;
 			}
+		}
+		
+		public function StopAll():void
+		{
+			rest = 1;
+			vel.x = 0;
+			vel.y = 0;
+			state = LifeForm.NORMAL;
+			swordCharge = 0;
+			spinSword = 0;
 		}
 	}
 }

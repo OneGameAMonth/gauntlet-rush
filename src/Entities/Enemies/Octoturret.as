@@ -17,7 +17,7 @@ package Entities.Enemies
 		private var randTimer:int;
 		private var stopCounter:int;
 		
-		public function Octoturret(x:int, y:int)
+		public function Octoturret(x:int, y:int, atkPow:Number = 0.5)
 		{
 			super(x, y, 0, 0, 16, 16);
 			sprite_sheet = my_sprite_sheet;
@@ -27,7 +27,7 @@ package Entities.Enemies
 			hp = 2;
 			randTimer = 0;
 			stopCounter = 0;
-			atkPow = 0.5;
+			this.atkPow = atkPow;
 			
 			currAniX = 2;
 		}
@@ -44,7 +44,7 @@ package Entities.Enemies
 					else if (facing == Global.DOWN) facing = Global.LEFT;
 					else if (facing == Global.LEFT) facing = Global.UP;
 					else if (facing == Global.UP) facing = Global.RIGHT;
-					entities.push(new OctoRock(x, y, facing));
+					entities.push(new OctoRock(x, y, facing, atkPow));
 					if (stopCounter >= 7){ 
 						stopCounter = 0;
 						randTimer = 32;

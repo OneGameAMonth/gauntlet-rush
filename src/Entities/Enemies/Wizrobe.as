@@ -20,7 +20,12 @@ package Entities.Enemies
 		public var visTimer:int;
 		public var visTimerMax:int;
 		
-		public function Wizrobe(x:int, y:int)
+		private var solidX:int;
+		private var solidY:int;
+		private var solidWidth:int;
+		private var solidHeight:int;
+		
+		public function Wizrobe(x:int, y:int, solidX:int = -1, solidY:int = -1, solidWidth:int = -1, solidHeight:int = -1)
 		{
 			super(x, y, 0, 0, 16, 16);
 			sprite_sheet = my_sprite_sheet;
@@ -35,6 +40,11 @@ package Entities.Enemies
 			invisTimer = 0;
 			visTimerMax = 40;
 			visTimer = visTimerMax/2;
+			
+			this.solidX = solidX;
+			this.solidY = solidY;
+			this.solidWidth = solidWidth;
+			this.solidHeight = solidHeight;
 		}
 		
 		override public function UpdateScript(entities:Array, map:Array):void
@@ -96,12 +106,22 @@ package Entities.Enemies
 			var rand:int = Math.floor(Math.random()*2);
 			if (rand == 0){
 				x = player.x;
-				y = Math.floor(Math.random()*192)+16;
+				y = Math.floor(Math.random()*176)+32;
+				if (solidHeight >= 0){
+					while ((y > solidY-16 && y+bb < solidY+solidHeight+16) && (x > solidX-16 && x+rb < solidX+solidWidth+16)){
+						y = Math.floor(Math.random()*176)+32;
+					}
+				}
 				if (y > player.y) facing = Global.UP;
 				else if (y < player.y) facing = Global.DOWN;
 			}else if (rand == 1){
 				y = player.y;
-				x = Math.floor(Math.random()*288)+16;
+				x = Math.floor(Math.random()*256)+32;
+				if (solidHeight >= 0){
+					while ((y > solidY-16 && y+bb < solidY+solidHeight+16) && (x > solidX-16 && x+rb < solidX+solidWidth+16)){
+						x = Math.floor(Math.random()*256)+32;
+					}
+				}
 				if (x > player.x) facing = Global.LEFT;
 				else if (x < player.x) facing = Global.RIGHT;
 			}

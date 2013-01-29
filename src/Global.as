@@ -10,6 +10,8 @@ package
 		//GAME STUFF
 		public static var HP:Number;
 		public static var MAX_HP:Number;
+		public static var DeathTimerLimit:int = 80;
+		public static var DeathTimer:int = 80;
 		
 		//dimensions of stage
 		public static var zoom:int = 2;

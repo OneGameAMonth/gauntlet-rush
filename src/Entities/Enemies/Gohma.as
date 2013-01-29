@@ -63,7 +63,7 @@ package Entities.Enemies
 			hp -= 1;
 			if (hp > 0){
 				invincibility = 20;
-				SoundManager.getInstance().playSfx("HitSound", 0, 1);
+				SoundManager.getInstance().playSfx("BossHitSound", 0, 1);
 			}
 			else{
 				SoundManager.getInstance().playSfx("BossScream2Sound", 0, 1);

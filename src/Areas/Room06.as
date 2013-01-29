@@ -19,14 +19,17 @@ package Areas
 				map[9+i][2] = new Tile(2*16, (9+i)*16, 1, 0, true);
 				map[2+i][17] = new Tile(17*16, (2+i)*16, 1, 0, true);
 				map[9+i][17] = new Tile(17*16, (9+i)*16, 1, 0, true);
-				for (var j:int = 0; j < 3; j++){
-					map[6+j][8+i] = new Tile((8+i)*16, (6+j)*16, 1, 0, true);
-				}
 			}for (i = 0; i < 2; i++){
 				map[2][3+i] = new Tile((3+i)*16, 2*16, 1, 0, true);
 				map[2][15+i] = new Tile((15+i)*16, 2*16, 1, 0, true);
 				map[12][3+i] = new Tile((3+i)*16, 12*16, 1, 0, true);
 				map[12][15+i] = new Tile((15+i)*16, 12*16, 1, 0, true);
+			}for (i = 0; i < 6; i++){
+				map[7][7+i] = new Tile((7+i)*16, 7*16, 1, 0, true);
+				if (i < 5){
+					map[5+i][9] = new Tile(9*16, (5+i)*16, 1, 0, true);
+					map[5+i][10] = new Tile(10*16, (5+i)*16, 1, 0, true);
+				}
 			}
 		}		
 		

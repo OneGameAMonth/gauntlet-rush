@@ -7,7 +7,7 @@ package Entities.Enemies
 		[Embed(source = '../../resources/images/rock_sheet.png')]
 		private var my_sprite_sheet:Class;
 		
-		public function OctoRock(x:Number, y:Number, facing:int) 
+		public function OctoRock(x:Number, y:Number, facing:int, atkPow:Number = 0.5) 
 		{
 			super(x, y, 5, 5, 10, 10);
 			sprite_sheet = my_sprite_sheet;
@@ -19,7 +19,7 @@ package Entities.Enemies
 			
 			maxFrame = 4;
 			frameDelay = 3;
-			atkPow = 0.5;
+			this.atkPow = atkPow;
 		}
 		
 		override public function Update(entities:Array, map:Array):void

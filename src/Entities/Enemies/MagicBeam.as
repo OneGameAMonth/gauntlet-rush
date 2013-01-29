@@ -23,6 +23,7 @@ package Entities.Enemies
 			maxFrame = 3;
 			frameDelay = 3;
 			atkPow = 1;
+			SoundManager.getInstance().playSfx("MagicalRodSound", 0, 1);
 		}
 		
 		override public function Update(entities:Array, map:Array):void

@@ -2,15 +2,22 @@ package Entities.Enemies
 {
 	import Entities.Parents.Enemy;
 	import Entities.Player;
+	import flash.geom.Matrix;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	
 	public class Rope extends Enemy
 	{
 		[Embed(source = '../../resources/images/rope_sheet.png')]
 		private var my_sprite_sheet:Class;
+		[Embed(source = '../../resources/images/rope_hurt_sheet.png')]
+		private var hurt_sprite_sheet:Class;
+		[Embed(source = '../../resources/images/rope_hurt2_sheet.png')]
+		private var hurt2_sprite_sheet:Class;
 		private var randTimer:int;
 		private var stopChaseTimer:int;
 		
-		public function Rope(x:int, y:int) 
+		public function Rope(x:int, y:int, currAniX:int = 0) 
 		{
 			super(x, y, 1, 1, 15, 15);
 			sprite_sheet = my_sprite_sheet;
@@ -19,7 +26,35 @@ package Entities.Enemies
 			topspeed = 4.0;
 			randTimer = 0;
 			stopChaseTimer = 0;
-			atkPow = 0.5;
+			
+			this.currAniX = currAniX;
+			if (currAniX > 0){
+				atkPow = 1;
+				hp = 2;
+			}
+			else atkPow = 0.5;
+		}
+		
+		override public function Render(levelRenderer:BitmapData):void
+		{
+			if (!visible) return;
+			
+			sprite_sheet = my_sprite_sheet;
+			if (invincibility > 0){
+				if ((invincibility >= 4 && invincibility <= 8) || (invincibility >= 12 && invincibility <= 16) || 
+					(invincibility >= 20 && invincibility <= 24) || (invincibility >= 28 && invincibility <= 32) || 
+					(invincibility >= 36 && invincibility <= 40))
+					sprite_sheet = hurt2_sprite_sheet;
+				else sprite_sheet = hurt_sprite_sheet;
+			}
+			
+			var temp_image:Bitmap = new Bitmap(new BitmapData(frameWidth, frameHeight));
+			var temp_sheet:Bitmap = new sprite_sheet();
+			DrawSpriteFromSheet(temp_image, temp_sheet);
+			
+			var matrix:Matrix = new Matrix();
+			matrix.translate(x, y);
+			levelRenderer.draw(image_sprite, matrix);
 		}
 		
 		override public function UpdateScript(entities:Array, map:Array):void

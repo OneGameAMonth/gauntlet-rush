@@ -27,6 +27,10 @@ package
 		private var Shield_sound:Class;
 		[Embed(source = 'resources/sounds/LOZ_Sword.mp3')]
 		private var Sword_sound:Class;
+		[Embed(source = 'resources/sounds/LA_Enemy_Die_Power.mp3')]
+		private var Boss_hit_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Boss_Scream1.mp3')]
+		private var Boss_scream1_sound:Class;
 		[Embed(source = 'resources/sounds/LOZ_Boss_Scream2.mp3')]
 		private var Boss_scream2_sound:Class;
 		[Embed(source = 'resources/sounds/LOZ_Die.mp3')]
@@ -49,12 +53,18 @@ package
 		private var Awaken_sound:Class;
 		[Embed(source = 'resources/sounds/LOZ_Text.mp3')]
 		private var Text_sound:Class;
-		[Embed(source = 'resources/sounds/selectSound.mp3')]
+		[Embed(source = 'resources/sounds/AOL_Pause.mp3')]
 		private var Select_sound:Class;
 		[Embed(source = 'resources/sounds/OOT_LowHealth.mp3')]
 		private var LowHealth_sound:Class;
 		[Embed(source = 'resources/sounds/LOZ_Get_Heart.mp3')]
 		private var GetHeart_sound:Class;
+		[Embed(source = 'resources/sounds/LA_Boss_Bursting.mp3')]
+		private var SpawnEnemy_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Sword_Shoot.mp3')]
+		private var SwordShoot_sound:Class;
+		[Embed(source = 'resources/sounds/LOZ_Arrow.mp3')]
+		private var Arrow_sound:Class;
 		
 		public function Game() 
 		{
@@ -85,6 +95,8 @@ package
 			SoundManager.getInstance().addSfx(new Kill_sound(), "KillSound");
 			SoundManager.getInstance().addSfx(new Shield_sound(), "ShieldSound");
 			SoundManager.getInstance().addSfx(new Sword_sound(), "SwordSound");
+			SoundManager.getInstance().addSfx(new Boss_hit_sound(), "BossHitSound");
+			SoundManager.getInstance().addSfx(new Boss_scream1_sound(), "BossScream1Sound");
 			SoundManager.getInstance().addSfx(new Boss_scream2_sound(), "BossScream2Sound");
 			SoundManager.getInstance().addSfx(new Die_sound(), "DieSound");
 			SoundManager.getInstance().addSfx(new Get_item_sound(), "GetItemSound");
@@ -99,6 +111,9 @@ package
 			SoundManager.getInstance().addSfx(new Select_sound(), "SelectSound");
 			SoundManager.getInstance().addSfx(new LowHealth_sound(), "LowHealthSound");
 			SoundManager.getInstance().addSfx(new GetHeart_sound(), "GetHeartSound");
+			SoundManager.getInstance().addSfx(new SpawnEnemy_sound(), "SpawnEnemySound");
+			SoundManager.getInstance().addSfx(new SwordShoot_sound(), "SwordShootSound");
+			SoundManager.getInstance().addSfx(new Arrow_sound(), "ArrowSound");
 		}
 		
 		public function Render():void

@@ -5,20 +5,17 @@ To save on time, make the game short (ten areas?) But challenging (not nintendo 
 for a girl it becomes increasingly evident that she has no interest in you 
 
 PLAYTEST::
-01. Make final boss. SHOULD LEVEL PRIOR HAVE THAT HUGE BLOCK???
-02. Small Short Death Animation
-03. Make more evident roll attack and sword charge(???) [Put info in a sign???]
-04. Gohma close eyes after two subsequant hits!
-05. Equalize all the sounds.
-	-Sounds for projectile firing (magic beams and octorocks)
-06. (Display "Level 01") POINT SYSTEM (killing enemies ++, dying--)
+01. ADD MUSIC AND SOUND BUTTONS
+02. SAVE TO COOKIES. Click to start Loading screen.
+03. Easy/Med/Hard Mode
+04. (Display "Level 01") POINT SYSTEM (killing enemies ++, dying--)
 	-Database point system
+05. RELOAD CHECKPOINT = SAVE THE X/Y position OF PLAYER
+06. Make more evident roll attack and sword charge(???) [Put info in a sign???]
 07. Make evident that SAVE POINT saves game (glowy spot and flash???)
 08. SPAWN IN PORTCULLIS PREVIOUS, DON'T MAKE IT APPEAR UNLESS YOU WALK FORWARD SOME ("ToLastRoom");
-09. RELOAD CHECKPOINT = SAVE THE X/Y position OF PLAYER
-10. SAVE TO COOKIES. Click to start Loading screen.
-11. Rope gets stuck on brick like an idiot
-12. Global.swordCharge???
+09. Rope gets stuck on brick like an idiot
+10. Global.swordCharge???
 	
 http://www.zeldadungeon.net/Zelda01-the-legend-of-zelda-enemy-guide.php
 http://androidarts.com/console_games.htm

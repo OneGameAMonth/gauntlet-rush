@@ -29,7 +29,7 @@ package Entities.Enemies
 			frameDelay = 5;
 			topspeed = 3.0;
 			atkPow = 1;
-			hp = 3;
+			hp = 2;
 			
 			checkArea = 48;
 			beginChase = 0;

@@ -25,7 +25,7 @@ package Entities.Enemies
 			frameDelay = 5;
 			topspeed = 2.0;
 			hp = 3;
-			atkPow = 2;
+			atkPow = 1;
 			
 			randTimer = 0;
 			currAniX = 2;

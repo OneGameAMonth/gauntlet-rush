@@ -32,8 +32,8 @@ package Areas
 			entities.push(new Armos(64, height-80));
 			entities.push(new Armos(width-80, height-80));
 			entities.push(new Wizrobe(width/2-8, height/2-8));
-			entities.push(new Rope(16, 16));
-			entities.push(new Rope(width-32, height-32));
+			entities.push(new Rope(16, 16, 2));
+			entities.push(new Rope(width-32, height-32, 2));
 			enemyCount = 7;
 			
 			//create items
