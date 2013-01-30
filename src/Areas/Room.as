@@ -334,7 +334,7 @@ package Areas
 		{			
 			for (var i:int = 0; i < Global.MAX_HP; i++){
 				var sprite_x:int = 0;
-				if (Global.HP == i+0.5) sprite_x = 1*15;
+				if (Global.HP <= i+0.5 && Global.HP > i) sprite_x = 1*15;
 				else if (Global.HP < i+0.5) sprite_x = 2*15;
 				temp_image.bitmapData.copyPixels(temp_sheet.bitmapData,
 					new Rectangle(sprite_x, 0, 15, 16), 

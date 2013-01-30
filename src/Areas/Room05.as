@@ -82,7 +82,9 @@ package Areas
 		override public function ReloadHearts():void
 		{
 			entities.push(new CloudDisappear(width/2-8, height/2));
-			entities.push(new HeartContainer(width/2+3-8, height/2+3));
+			if (Global.GAME_MODE != Global.HARD)
+				entities.push(new HeartContainer(6*16+3, 16+3));
+			else entities.push(new Fairy(6*16, 16));
 		}
 		
 		override public function Update():void
@@ -132,7 +134,7 @@ package Areas
 				if (Global.HP <= 0 && !(entities[i] is Player)) entities.splice(i, 1);
 				if (entities[i] is HeartContainer || entities[i] is SavePoint || entities[i] is CloudDisappear){
 					if (portcullisIndex < 0) entities[i].visible = true;
-					if (entities[i] is HeartContainer) heartIndex = i;
+					if (entities[i] is HeartContainer || entities[i] is Fairy) heartIndex = i;
 				}
 			}for (i = 0; i < entities.length; i++){ if (entities[i] is Player) playerIndex = i; }
 			if (heartIndex < 0 && !displayedDialogue && Global.HP > 0){

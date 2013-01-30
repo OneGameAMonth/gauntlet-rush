@@ -216,6 +216,7 @@ package Entities
 		
 		override public function GetHurtByObject(object:Mover, dmg:Number = 1):void
 		{
+			if (Global.GAME_MODE == Global.EASY) dmg/=2;
 			Global.HP -= dmg;
 			if (Global.HP > 0){
 				SoundManager.getInstance().playSfx("HurtSound", 0, 1);

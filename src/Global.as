@@ -13,6 +13,11 @@ package
 		public static var DeathTimerLimit:int = 80;
 		public static var DeathTimer:int = 80;
 		
+		public static var GAME_MODE:int;
+		public static const EASY:int = 0;
+		public static const NORMAL:int = 1;
+		public static const HARD:int = 2;
+		
 		//dimensions of stage
 		public static var zoom:int = 2;
 		public static var stageWidth:int = 640/zoom;

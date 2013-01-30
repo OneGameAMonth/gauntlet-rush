@@ -11,6 +11,11 @@ package Areas
 			super(320, 240, 1);
 		}
 		
+		override public function Update():void
+		{
+			super.Update();
+		}
+		
 		override public function CreateEntities():void
 		{
 			super.CreateEntities();

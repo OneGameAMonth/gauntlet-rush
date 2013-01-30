@@ -2,9 +2,12 @@ package
 {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.Sprite;
 	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
+	import flash.geom.Point;
 	import Areas.*;
 	
 	public class Game 
@@ -16,55 +19,15 @@ package
 		public static var roomIndex:int;
 		public static var paused:Boolean;
 		
-		//sound loading...
-		[Embed(source = 'resources/sounds/LOZ_Hit.mp3')]
-		private var Hit_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Hurt.mp3')]
-		private var Hurt_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Kill.mp3')]
-		private var Kill_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Shield.mp3')]
-		private var Shield_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Sword.mp3')]
-		private var Sword_sound:Class;
-		[Embed(source = 'resources/sounds/LA_Enemy_Die_Power.mp3')]
-		private var Boss_hit_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Boss_Scream1.mp3')]
-		private var Boss_scream1_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Boss_Scream2.mp3')]
-		private var Boss_scream2_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Die.mp3')]
-		private var Die_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Get_Item.mp3')]
-		private var Get_item_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Unlock.mp3')]
-		private var Unlock_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Bomb_Blow.mp3')]
-		private var Bomb_blow_sound:Class;
-		[Embed(source = 'resources/sounds/rollSound.mp3')]
-		private var Roll_sound:Class;
-		[Embed(source = 'resources/sounds/thudSound.mp3')]
-		private var Thud_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_MagicalRod.mp3')]
-		private var MagicalRod_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Get_Rupee.mp3')]
-		private var Get_Rupee_sound:Class;
-		[Embed(source = 'resources/sounds/awakenSound.mp3')]
-		private var Awaken_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Text.mp3')]
-		private var Text_sound:Class;
-		[Embed(source = 'resources/sounds/AOL_Pause.mp3')]
-		private var Select_sound:Class;
-		[Embed(source = 'resources/sounds/OOT_LowHealth.mp3')]
-		private var LowHealth_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Get_Heart.mp3')]
-		private var GetHeart_sound:Class;
-		[Embed(source = 'resources/sounds/LA_Boss_Bursting.mp3')]
-		private var SpawnEnemy_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Sword_Shoot.mp3')]
-		private var SwordShoot_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Arrow.mp3')]
-		private var Arrow_sound:Class;
+		public var musicButtonPress:Boolean;
+		public var musicMuted:Boolean;
+		public var soundButtonPress:Boolean;
+		public var soundMuted:Boolean;
+		
+		[Embed(source = 'resources/images/sound_button_sheet.png')]
+		public var sound_button_sheet:Class;
+		protected var image:BitmapData;
+		public var image_sprite:Sprite;
 		
 		public function Game() 
 		{
@@ -72,6 +35,10 @@ package
 			Screen = new BitmapData(Global.stageWidth*Global.zoom, Global.stageHeight*Global.zoom, false, 0x000000);
 			screenBitmap = new Bitmap(Screen);
 			paused = false;
+			
+			Global.GAME_MODE = Global.HARD;
+			Global.MAX_HP = 3;
+			Global.HP = Global.MAX_HP;
 			
 			roomArray = [];
 			roomArray.push(new Room00());
@@ -86,46 +53,29 @@ package
 			roomArray.push(new Room09());
 			roomIndex = 0;
 			
-			Global.MAX_HP = 3;
-			Global.HP = Global.MAX_HP;
+			SoundLoader.LoadSounds();
+			SoundManager.getInstance().playMusic("BattleMusic", -5, int.MAX_VALUE);
 			
-			//loading sounds
-			SoundManager.getInstance().addSfx(new Hit_sound(), "HitSound");
-			SoundManager.getInstance().addSfx(new Hurt_sound(), "HurtSound");
-			SoundManager.getInstance().addSfx(new Kill_sound(), "KillSound");
-			SoundManager.getInstance().addSfx(new Shield_sound(), "ShieldSound");
-			SoundManager.getInstance().addSfx(new Sword_sound(), "SwordSound");
-			SoundManager.getInstance().addSfx(new Boss_hit_sound(), "BossHitSound");
-			SoundManager.getInstance().addSfx(new Boss_scream1_sound(), "BossScream1Sound");
-			SoundManager.getInstance().addSfx(new Boss_scream2_sound(), "BossScream2Sound");
-			SoundManager.getInstance().addSfx(new Die_sound(), "DieSound");
-			SoundManager.getInstance().addSfx(new Get_item_sound(), "GetItemSound");
-			SoundManager.getInstance().addSfx(new Unlock_sound(), "UnlockSound");
-			SoundManager.getInstance().addSfx(new Bomb_blow_sound(), "BombBlowSound");
-			SoundManager.getInstance().addSfx(new Roll_sound(), "RollSound");
-			SoundManager.getInstance().addSfx(new Thud_sound(), "ThudSound");
-			SoundManager.getInstance().addSfx(new MagicalRod_sound(), "MagicalRodSound");
-			SoundManager.getInstance().addSfx(new Get_Rupee_sound(), "GetRupeeSound");
-			SoundManager.getInstance().addSfx(new Awaken_sound(), "AwakenSound");
-			SoundManager.getInstance().addSfx(new Text_sound(), "TextSound");
-			SoundManager.getInstance().addSfx(new Select_sound(), "SelectSound");
-			SoundManager.getInstance().addSfx(new LowHealth_sound(), "LowHealthSound");
-			SoundManager.getInstance().addSfx(new GetHeart_sound(), "GetHeartSound");
-			SoundManager.getInstance().addSfx(new SpawnEnemy_sound(), "SpawnEnemySound");
-			SoundManager.getInstance().addSfx(new SwordShoot_sound(), "SwordShootSound");
-			SoundManager.getInstance().addSfx(new Arrow_sound(), "ArrowSound");
+			musicButtonPress = false;
+			musicMuted = false;
+			soundButtonPress = false;
+			soundMuted = false;
+			//ready the sound ui buttons
+			image_sprite = new Sprite();
 		}
 		
 		public function Render():void
 		{
 			Screen.lock();
 			roomArray[roomIndex].Render();
+			RenderButtons();
 			Screen.unlock();
 		}
 		
 		public function Update():void
 		{
-			if (Global.CheckKeyPressed(Global.ENTER)){ 
+			UpdateButtonInput();
+			if (Global.CheckKeyPressed(Global.ENTER) || Global.CheckKeyPressed(Global.ESC)){ 
 				Game.paused = !Game.paused;
 				SoundManager.getInstance().playSfx("SelectSound", 0, 1);
 			}
@@ -134,6 +84,98 @@ package
 			//clear out the "keys_up" array for next update
 			Global.keys_up = new Array();
 			Global.keys_pressed = new Array();
+		}
+		
+		/*************************************************************************************/
+		//DRAWING UI AND STUFF
+		/*************************************************************************************/
+		
+		public function UpdateButtonInput():void
+		{
+			if (Global.mousePressed){
+				//music button
+				if (Global.mouse_X >= (320-16)*Global.zoom && Global.mouse_X <= (320)*Global.zoom && 
+					Global.mouse_Y >= 0*Global.zoom && Global.mouse_Y <= 16*Global.zoom)
+					musicButtonPress = true;
+			
+				//sound button
+				if (Global.mouse_X >= (320-32)*Global.zoom && Global.mouse_X <= (320-16)*Global.zoom && 
+					Global.mouse_Y >= 0*Global.zoom && Global.mouse_Y <= 16*Global.zoom)
+					soundButtonPress = true;
+			}else{
+				//music button
+				if (Global.mouse_X >= (320-16)*Global.zoom && Global.mouse_X <= (320)*Global.zoom && 
+					Global.mouse_Y >= 0*Global.zoom && Global.mouse_Y <= 16*Global.zoom){
+					if (musicButtonPress){
+						SoundManager.getInstance().toggleMuteMusic();
+						musicMuted = !musicMuted;
+						SoundManager.getInstance().playSfx("ButtonSound", 0, 1);
+					}
+			}
+			
+				//sound button
+				if (Global.mouse_X >= (320-32)*Global.zoom && Global.mouse_X <= (320-16)*Global.zoom && 
+					Global.mouse_Y >= 0*Global.zoom && Global.mouse_Y <= 16*Global.zoom){
+					if (soundButtonPress){
+						SoundManager.getInstance().toggleMuteSfx();
+						soundMuted = !soundMuted;
+						SoundManager.getInstance().playSfx("ButtonSound", 0, 1);
+					}
+				}
+			
+				musicButtonPress = false;
+				soundButtonPress = false;
+			}
+		}
+		
+		//
+		//RENDER BUTTONS FOR SOUND AND MUSIC TOGGLING
+		public function RenderButtons():void
+		{
+			//render the Sound UI Buttons
+			var temp_image:Bitmap = new Bitmap(new BitmapData(16, 16));
+			var temp_sheet:Bitmap = new sound_button_sheet();
+			
+			//Draw the music button
+			var temp_x_offset:int = 0; var temp_y_offset:int = 0;
+			if (musicButtonPress) temp_x_offset = 1;
+			if (musicMuted) temp_y_offset = 1;
+			
+			DrawSpriteFromSheet(temp_image, temp_sheet, temp_x_offset, 2+temp_y_offset);
+			var matrix:Matrix = new Matrix();
+			matrix.translate(320-16, 0);
+			matrix.scale(Global.zoom, Global.zoom);
+			Screen.draw(image_sprite, matrix);
+			
+			//Draw the sound button
+			temp_x_offset = 0; temp_y_offset = 0;
+			if (soundButtonPress) temp_x_offset = 1;
+			if (soundMuted) temp_y_offset = 1;
+			
+			DrawSpriteFromSheet(temp_image, temp_sheet, temp_x_offset, temp_y_offset);
+			matrix = new Matrix();
+			matrix.translate(320-32, 0);
+			matrix.scale(Global.zoom, Global.zoom);
+			Screen.draw(image_sprite, matrix);
+		}
+		
+		//
+		//USED FOR DRAWING SOUND UI BUTTONS
+		public function DrawSpriteFromSheet(temp_image:Bitmap, temp_sheet:Bitmap,
+											x_offset:int, y_offset:int):void
+		{
+			for (var i:int = 0; i < image_sprite.numChildren;i++){
+				image_sprite.removeChildAt(0);
+			}
+			
+			var sprite_x:int = x_offset*16;
+			var sprite_y:int = y_offset*16;
+			temp_image.bitmapData.copyPixels(temp_sheet.bitmapData,
+				new Rectangle(sprite_x, sprite_y, 16, 16), 
+				new Point(0,0)
+			);
+			
+			image_sprite.addChild(temp_image);
 		}
 		
 		/*************************************************************************************/
@@ -175,6 +217,20 @@ package
 				Global.keys_down.push(e.keyCode);
 				Global.keys_pressed.push(e.keyCode);
 			}
+		}
+		
+		public function MouseDown(e:MouseEvent):void
+		{	
+			Global.mouse_X = e.stageX;
+			Global.mouse_Y = e.stageY;
+			Global.mousePressed = true;
+		}
+		
+		public function MouseUp(e:MouseEvent):void
+		{
+			Global.mouse_X = e.stageX;
+			Global.mouse_Y = e.stageY;
+			Global.mousePressed = false;
 		}
 	}
 }

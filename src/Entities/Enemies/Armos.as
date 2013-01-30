@@ -1,6 +1,7 @@
 package Entities.Enemies 
 {
 	import Entities.Parents.Enemy;
+	import Entities.Parents.Mover;
 	import Entities.Player;
 	import flash.geom.Matrix;
 	import flash.display.Bitmap;
@@ -123,6 +124,29 @@ package Entities.Enemies
 			else{
 				if (hero.y > y) facing = Global.DOWN;
 				else facing = Global.UP;
+			}
+		}
+		
+		override public function GetHurtByObject(object:Mover, dmg:Number = 1):void
+		{
+			if (aliveTime <= 0) return;
+			hp -= dmg;
+			if (hp > 0){
+				SoundManager.getInstance().playSfx("HitSound", 0, 1);
+				state = HURT_BOUNCE;
+				hurt = 7;
+				invincibility = 20;
+				vel.x = 0;
+				vel.y = 0;
+				var ofacing:int = object.facing;
+				if (ofacing == Global.LEFT || ofacing == Global.UPLEFT) vel.x = -6.0;
+				else if (ofacing == Global.RIGHT || ofacing == Global.DOWNRIGHT) vel.x = 6.0;
+				else if (ofacing == Global.UP || ofacing == Global.UPRIGHT) vel.y = -6.0;
+				else if (ofacing == Global.DOWN || ofacing == Global.DOWNLEFT) vel.y = 6.0;
+			}
+			else{
+				SoundManager.getInstance().playSfx("KillSound", 0, 1);
+				delete_me = true;
 			}
 		}
 		

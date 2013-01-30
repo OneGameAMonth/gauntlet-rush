@@ -7,6 +7,7 @@ package Areas
 	import Entities.Items.SavePoint;
 	import Entities.Items.HeartContainer;
 	import Entities.Items.CloudDisappear;
+	import Entities.Items.Fairy;
 	
 	public class Room04 extends Room
 	{
@@ -65,7 +66,9 @@ package Areas
 		override public function ReloadHearts():void
 		{
 			entities.push(new CloudDisappear(6*16, 16));
-			entities.push(new HeartContainer(6*16+3, 16+3));
+			if (Global.GAME_MODE != Global.HARD)
+				entities.push(new HeartContainer(6*16+3, 16+3));
+			else entities.push(new Fairy(6*16, 16));
 		}
 	}
 }
