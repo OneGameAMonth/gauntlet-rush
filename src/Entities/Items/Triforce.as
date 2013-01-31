@@ -2,6 +2,7 @@ package Entities.Items
 {
 	import Entities.Parents.GameSprite;
 	import Entities.Player;
+	import Screens.PlayGame;
 	
 	public class Triforce extends GameSprite
 	{
@@ -29,6 +30,10 @@ package Entities.Items
 						Global.HP = Global.MAX_HP;
 						SoundManager.getInstance().playSfx("GetItemSound", 0, 1);
 						delete_me = true;
+						
+						if (Global.highScore < Global.currScore) Global.highScore = Global.currScore;
+						PlayGame.dataManager.SetCookieVal(
+							"gauntlet-data", PlayGame.dataManager.ConstructCookieData());
 					}
 				}
 			}

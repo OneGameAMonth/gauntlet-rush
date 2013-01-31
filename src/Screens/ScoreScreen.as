@@ -169,10 +169,15 @@ package Screens
 				Game.Renderer.draw(uiText, new Matrix(Global.zoom, 0, 0, Global.zoom, 40*Global.zoom, 10*Global.zoom));
 				
 				//Render middle text
-				for (i = 0; i < dataManager.highScores.length-3; i++)
+				var length:int = dataManager.highScores.length;
+				if (length > 7) length = 7;
+				for (i = 0; i < length; i++)
 				{
 					uiText.textColor = 0xFFFFFF;
 					var name_score:Array = dataManager.highScores[i].split(",");
+					if (name_score[2] == "easy") uiText.textColor = 0xB8F818;
+					else if (name_score[2] == "norm") uiText.textColor = 0xB8B8F8;
+					else if (name_score[2] == "hard") uiText.textColor = 0xF83800;
 					
 					uiText.text = (i+1) +".";
 					Game.Renderer.draw(uiText, new Matrix(Global.zoom, 0, 0, Global.zoom, 10*Global.zoom, (35+(i*23))*Global.zoom));

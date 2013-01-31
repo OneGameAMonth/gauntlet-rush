@@ -73,6 +73,10 @@ package
 			UpdateSoundButtonInput();
 			var lastState:int = state;
 			stateArray[state].Update();
+			if (state == MAIN_MENU){
+				if (lastState != MAIN_MENU)
+					stateArray[state].RetryData();
+			}
 			if (state == SCORE_SCREEN){
 				if (lastState == MAIN_MENU){
 					stateArray[state].state = stateArray[state].RETRIEVE_SCORES;

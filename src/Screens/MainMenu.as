@@ -53,6 +53,14 @@ package Screens
 			if (data != null) cursorY = 1;
 		}
 		
+		public function RetryData():void
+		{
+			var dataManager:DataManager = new DataManager();
+			
+			data = dataManager.GetCookieVal("gauntlet-data");
+			if (data != null) cursorY = 1;
+		}
+		
 		public function Update():void
 		{
 			DataManager.ROOM_INDEX = 0;
@@ -128,6 +136,13 @@ package Screens
 				uiText.textColor = 0xFFFFFF;
 				uiText.text = "High Scores";
 				Game.Renderer.draw(uiText, new Matrix(Global.zoom, 0, 0, Global.zoom, 100*Global.zoom, 160*Global.zoom));
+				
+				if (data != null){
+					var dataArray:Array = data.split(",");
+					uiText.text = "Your Best: "+parseInt(dataArray[1]);
+					uiText.textColor = 0x999999;
+					Game.Renderer.draw(uiText, new Matrix(Global.zoom, 0, 0, Global.zoom, 55*Global.zoom, 10*Global.zoom));
+				}
 			}else{
 				uiText.text = "Choose Difficulty";
 				Game.Renderer.draw(uiText, new Matrix(Global.zoom, 0, 0, Global.zoom, 65*Global.zoom, 40*Global.zoom));

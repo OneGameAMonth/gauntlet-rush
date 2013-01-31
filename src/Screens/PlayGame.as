@@ -124,6 +124,8 @@ package Screens
 				ReloadSavedGame();
 				if (DataManager.ROOM_INDEX == 0)
 					roomArray[0].Restart();
+				roomArray[9] = new Room09();
+				roomArray[5] = new Room05();
 			}
 			musicPlaying = "";
 		}

@@ -34,7 +34,7 @@ package
 		public function SubmitScore(name:String, score:int, difficulty:String):void
 		{
 			var myrequest:URLRequest = new URLRequest(
-				"http://cakeandturtles.comoj.com/gauntletrush/SubmitScore.php");
+				"http://cakeandturtles.nfshost.com/gauntletrush/SubmitScore.php");
 			myrequest.method = URLRequestMethod.POST;
 			var variables:URLVariables = new URLVariables();
 			variables.username = Config.username;
@@ -54,7 +54,7 @@ package
 		public function RetrieveScores():void
 		{
 			var myrequest:URLRequest = new URLRequest(
-				"http://cakeandturtles.comoj.com/gauntletrush/RetrieveScores.php");
+				"http://cakeandturtles.nfshost.com/gauntletrush/RetrieveScores.php");
 			myrequest.method = URLRequestMethod.POST;
 			
 			var variables:URLVariables = new URLVariables();

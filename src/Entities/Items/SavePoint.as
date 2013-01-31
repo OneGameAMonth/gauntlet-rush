@@ -38,6 +38,7 @@ package Entities.Items
 						contactPlayer = true;
 						trace("Game Saved!");
 						SoundManager.getInstance().playSfx("GetRupeeSound", 0, 1);
+						if (Global.highScore < Global.currScore) Global.highScore = Global.currScore;
 						DataManager.ROOM_INDEX = PlayGame.roomIndex;
 						DataManager.MAX_HP = Global.MAX_HP;
 						DataManager.HP = Global.MAX_HP;
