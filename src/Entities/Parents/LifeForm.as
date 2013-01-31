@@ -4,6 +4,7 @@ package Entities.Parents
 	public class LifeForm extends Mover
 	{
 		public var hp:Number;
+		public var maxHP:Number;
 		public var invincibility:int;
 		public var hurt:int;
 		
@@ -15,13 +16,14 @@ package Entities.Parents
 		{
 			super(x, y, lb, tb, rb, bb);
 			hp = 1;
+			maxHP = 1;
 			invincibility = 0;
 			hurt = 0;
 			
 			state = NORMAL;
 		}
 		
-		public function GetHurtByObject(object:Mover, dmg:Number = 1):void
+		public function GetHurtByObject(object:Mover, dmg:Number = 1, invin:int = 0):void
 		{
 			hp -= dmg;
 			if (hp > 0){

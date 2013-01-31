@@ -25,6 +25,7 @@ package Entities.Enemies
 			frameDelay = 5;
 			topspeed = 2.0;
 			hp = 2;
+			maxHP = 2;
 			randTimer = 0;
 			stopCounter = 0;
 			this.atkPow = atkPow;

@@ -40,6 +40,7 @@ package Entities.Enemies
 				currAniY = 1;
 				hp = 2;
 			}
+			maxHP = hp;
 		}
 		
 		override public function Render(levelRenderer:BitmapData):void

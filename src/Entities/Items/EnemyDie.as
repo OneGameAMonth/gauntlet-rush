@@ -31,7 +31,7 @@ package Entities.Items
 		override public function Update(entities:Array, map:Array):void
 		{
 			if (spawnHeart){
-				if (Global.HP != Global.MAX_HP) entities.push(new Heart(x+4, y+4));
+				if (Global.HP <= Global.MAX_HP-1) entities.push(new Heart(x+4, y+4));
 				spawnHeart = false;
 			}
 			UpdateAnimation();

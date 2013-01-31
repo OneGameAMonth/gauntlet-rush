@@ -14,6 +14,7 @@ package Areas
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.utils.*;
+	import flash.geom.ColorTransform;
 	import Entities.Dialogue.LinkMidDialogue;
 	
 	public class Room05 extends Room
@@ -21,6 +22,7 @@ package Areas
 		public var displayedDialogue:Boolean;
 		public var displayingDialogue:Boolean;
 		public var bossDead:Boolean;
+		public var playingMusic:Boolean;
 		
 		public function Room05() 
 		{
@@ -46,6 +48,7 @@ package Areas
 					map[i][14] = new Tile(14*16, i*16, 1, 0, true);
 				}
 			}
+			playingMusic = false;
 		}		
 		
 		override public function CreateEntities():void
@@ -54,6 +57,7 @@ package Areas
 			//create portculli
 			entities.push(new Portcullis(6*16, 0, 0));
 			portcullisIndex = entities.length-1;
+			PortcullisCloud(height-16);
 			entities.push(new Portcullis(6*16, (height/16-1)*16, 1));
 			
 			entities.push(new Player(10*16-8, (height/16-2)*16));
@@ -83,12 +87,78 @@ package Areas
 		{
 			entities.push(new CloudDisappear(width/2-8, height/2));
 			if (Global.GAME_MODE != Global.HARD)
-				entities.push(new HeartContainer(6*16+3, 16+3));
-			else entities.push(new Fairy(6*16, 16));
+				entities.push(new HeartContainer(width/2+3-8, height/2+3));
+			else{
+				var noFairy:Boolean = true;
+				for (var i:int = 0; i < entities.length; i++){
+					if (entities[i] is Fairy) noFairy = false;
+				}if (noFairy) entities.push(new Fairy(width/2-8, height/2));
+			}
+		}
+		
+		override public function Render():void
+		{
+			LevelRenderer.lock();
+			LevelRenderer.fillRect(new Rectangle(0, 0, LevelRenderer.width, LevelRenderer.height), 0x000000);
+			
+			var gohmaIndex:int = -1;
+			var dialogue:Array = [];
+			var i:int, j:int;
+			var tile_sheet:Bitmap = new tile_set();
+			for (i = 0; i < map.length; i++){
+				for (j = 0; j < map[i].length; j++){
+					var sprite_x:int = map[i][j].tileset_x*16;
+					var sprite_y:int = map[i][j].tileset_y*16;
+					var draw_x:int = j*16;
+					var draw_y:int = i*16;
+					LevelRenderer.copyPixels(tile_sheet.bitmapData,
+						new Rectangle(sprite_x, sprite_y, 16, 16),
+						new Point(draw_x, draw_y));
+				}
+			}for(i = entities.length-1; i >= 0; i--){
+				if (entities[i] is Dialogue) dialogue.push(entities[i]);
+				else{ 
+					entities[i].Render(LevelRenderer);
+					if (entities[i] is Gohma){
+						gohmaIndex = i;
+					}
+				}
+			}
+			if (gohmaIndex >= 0){
+				var hp:Number = entities[gohmaIndex].hp;
+				var maxHP:Number = entities[gohmaIndex].maxHP;
+				LevelRenderer.fillRect(new Rectangle(7*16, 2, 96, 14), 0x000000);
+				LevelRenderer.fillRect(new Rectangle(7*16+2, 4, 92*(hp/maxHP), 10), 0xF83800);
+			}
+			for (i = dialogue.length-1; i >= 0; i--){
+				dialogue[i].Render(LevelRenderer);
+			}
+			
+			var color:ColorTransform = new ColorTransform();
+			if (Global.HP <= 0){ 
+				color.redOffset = 128;
+				color.greenOffset = 0;
+				color.blueOffset = 0;
+			}
+			var matrix:Matrix = new Matrix();
+			matrix.translate(L_bitmap.x, L_bitmap.y);
+			matrix.scale(Global.zoom, Global.zoom);
+			Game.Renderer.draw(L_bitmap, matrix, color);
+			LevelRenderer.unlock();
 		}
 		
 		override public function Update():void
 		{
+			if (!bossDead && !playingMusic && enemyCount > 0){
+				playingMusic = true;
+				SoundManager.getInstance().stopAllMusic();
+				SoundManager.getInstance().playMusic("MinibossMusic", -5, int.MAX_VALUE);
+			}else if (bossDead && !playingMusic){
+				playingMusic = true;
+				SoundManager.getInstance().stopAllMusic();
+				SoundManager.getInstance().playMusic("LabyrinthMusic", -5, int.MAX_VALUE);
+			}
+			
 			if (playerIndex >= 0) PlayerInput(entities[playerIndex]);
 			playerIndex = -1;
 			if (enemyCount <= 0 && portcullisIndex >= 0){
@@ -96,6 +166,7 @@ package Areas
 				entities.push(new ToNextRoom(
 					entities[portcullisIndex].x, entities[portcullisIndex].y-16));
 				entities.splice(portcullisIndex, 1);
+				PortcullisCloud();
 				portcullisIndex = -1;
 			}
 			
@@ -111,9 +182,11 @@ package Areas
 					continue;
 				}
 				if (entities[i].delete_me || 
-						(bossDead && (entities[i] is Enemy || entities[i] is Projectile))){
+						((bossDead || enemyCount <= 0) && (entities[i] is Enemy || entities[i] is Projectile))){
 					if (entities[i] is Enemy || entities[i] is Projectile){
 						if (entities[i] is Gohma){
+							SoundManager.getInstance().stopAllMusic();
+							Global.currScore += 1000;
 							bossDead = true;
 							entities.push(new EnemyDie(width/2-16, height/2-8, false, 2));
 							
@@ -125,14 +198,17 @@ package Areas
 								portcullisIndex = -1;
 							}
 						}
-						else if (entities[i] is Enemy) entities.push(new EnemyDie(entities[i].x, entities[i].y, false));
+						else if (entities[i] is Enemy){ 
+							Global.currScore += (entities[i].maxHP+entities[i].atkPow)*100*(1+Global.GAME_MODE);
+							entities.push(new EnemyDie(entities[i].x, entities[i].y, false));
+						}
 						else if (entities[i] is Projectile) entities.push(new EnemyDie(entities[i].x, entities[i].y , true));
 						if (entities[i] is Enemy) enemyCount--;
 					}
 					entities.splice(i, 1);
 				}
 				if (Global.HP <= 0 && !(entities[i] is Player)) entities.splice(i, 1);
-				if (entities[i] is HeartContainer || entities[i] is SavePoint || entities[i] is CloudDisappear){
+				if (entities[i] is HeartContainer || entities[i] is Fairy || entities[i] is SavePoint || entities[i] is CloudDisappear){
 					if (portcullisIndex < 0) entities[i].visible = true;
 					if (entities[i] is HeartContainer || entities[i] is Fairy) heartIndex = i;
 				}

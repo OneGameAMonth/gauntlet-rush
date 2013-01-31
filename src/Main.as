@@ -22,7 +22,7 @@ package
 			// entry point
 			
 			game = new Game();
-			addChild(game.screenBitmap);
+			addChild(game.bitmap);
 			
 			//create main game loop
 			addEventListener(Event.ENTER_FRAME, Run);

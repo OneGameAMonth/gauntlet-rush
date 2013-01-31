@@ -25,6 +25,7 @@ package Entities.Enemies
 			frameDelay = 5;
 			topspeed = 2.0;
 			hp = 3;
+			maxHP = 3;
 			atkPow = 1;
 			
 			randTimer = 0;
@@ -55,7 +56,7 @@ package Entities.Enemies
 			if (state != HURT_BOUNCE) UpdateFacingWithVelocity();
 		}
 		
-		override public function GetHurtByObject(object:Mover, dmg:Number = 1):void
+		override public function GetHurtByObject(object:Mover, dmg:Number = 1, invin:int = 0):void
 		{
 			if (CheckIfBlockSword(object)) return;
 			hp -= 1;

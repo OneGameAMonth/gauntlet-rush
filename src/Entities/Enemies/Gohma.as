@@ -31,6 +31,7 @@ package Entities.Enemies
 			topspeed = 1.5;
 			speed = topspeed;
 			hp = 6;
+			maxHP = 6;
 			timer = 0;
 			fireCounter = 10;
 		}
@@ -48,7 +49,7 @@ package Entities.Enemies
 			if (fireCounter <= 0){
 				fireCounter = Math.floor(Math.random()*20)+80;
 				for (var i:int = 0; i < entities.length; i++){
-					if (entities[i] is Player && entities[i].y > y+bb){
+					if (entities[i] is Player && entities[i].y > y+bb/2){
 						SoundManager.getInstance().playSfx("BombBlowSound", 0, 1);
 						entities.push(new Fireball(x+32, y+8, entities[i].x, entities[i].y, 2));
 						return;
@@ -57,7 +58,7 @@ package Entities.Enemies
 			}
 		}
 		
-		override public function GetHurtByObject(object:Mover, dmg:Number = 1):void
+		override public function GetHurtByObject(object:Mover, dmg:Number = 1, invin:int = 0):void
 		{
 			if (object.x < x+16 || object.x > x+rb-54 || object.y < y+8) return;
 			hp -= 1;

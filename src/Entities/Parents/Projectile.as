@@ -5,6 +5,7 @@ package Entities.Parents
 		public var atkPow:Number;
 		public var canBeKilled:Boolean;
 		public var canBeBlocked:Boolean;
+		public var invincibility:int;
 		
 		public function Projectile(x:int, y:int, lb:int, tb:int, rb:int, bb:int) 
 		{
@@ -13,6 +14,7 @@ package Entities.Parents
 			canBeKilled = false;
 			canBeBlocked = true;
 			facing = -1;
+			invincibility = 1;
 		}		
 	}
 }

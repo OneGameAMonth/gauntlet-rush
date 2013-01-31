@@ -39,7 +39,8 @@ package Areas
 			//create portculli
 			entities.push(new Portcullis(6*16, 0, 0));
 			portcullisIndex = entities.length-1;
-			entities.push(new Portcullis(6*16-8, (height/16-1)*16, 1));
+			PortcullisCloud(height-16);
+			entities.push(new Portcullis(6*16, (height/16-1)*16, 1));
 			
 			entities.push(new Player(10*16-8, (height/16-2)*16));
 			playerIndex = entities.length-1;

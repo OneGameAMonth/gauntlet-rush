@@ -28,6 +28,7 @@ package Entities.Enemies
 			stopCounter = 0;
 			atkPow = 1;
 			hp = 2;
+			maxHP = 2;
 		}
 		
 		override public function UpdateScript(entities:Array, map:Array):void

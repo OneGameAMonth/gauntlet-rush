@@ -25,7 +25,7 @@ package Entities.Enemies
 		}
 		
 		override public function UpdateScript(entities:Array, map:Array):void
-		{			
+		{	
 			randTimer--;
 			if (randTimer <= 0){
 				vel.x = 0;

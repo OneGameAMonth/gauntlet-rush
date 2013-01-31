@@ -33,8 +33,9 @@ package Entities.Enemies
 			frameDelay = 5;
 			topspeed = 2.0;
 			hp = 3;
+			maxHP = 3;
 			currAniX = 3;
-			atkPow = 1;
+			atkPow = 0.5;
 			
 			currAniX = 2;
 			invisTimer = 0;
@@ -62,7 +63,7 @@ package Entities.Enemies
 					visTimer = visTimerMax;
 				}
 			}else{
-				if (visTimer == visTimerMax) entities.push(new MagicBeam(x, y, facing));
+				if (visTimer == visTimerMax && invincibility <= 0) entities.push(new MagicBeam(x, y, facing));
 				visTimer--;
 				if (visTimer <= 0 || invincibility == 1){
 					invisTimer = 60;
@@ -127,7 +128,7 @@ package Entities.Enemies
 			}
 		}
 		
-		override public function GetHurtByObject(object:Mover, dmg:Number = 1):void
+		override public function GetHurtByObject(object:Mover, dmg:Number = 1, invin:int = 0):void
 		{
 			if (!visible) return;
 			hp -= dmg;

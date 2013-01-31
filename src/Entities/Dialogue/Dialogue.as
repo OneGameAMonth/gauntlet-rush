@@ -26,6 +26,8 @@ package Entities.Dialogue
 					entities[i].rest = 2;
 					entities[i].vel.x = 0;
 					entities[i].vel.y = 0;
+					
+					if (entities[i].y >= 160) y = 32;
 				}
 			}
 			UpdateAnimation();

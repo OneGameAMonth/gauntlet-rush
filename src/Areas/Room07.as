@@ -21,7 +21,8 @@ package Areas
 			//create portculli
 			entities.push(new Portcullis(6*16, 0, 0));
 			portcullisIndex = entities.length-1;
-			entities.push(new Portcullis(6*16-8, (height/16-1)*16, 1));
+			PortcullisCloud(height-16);
+			entities.push(new Portcullis(6*16, (height/16-1)*16, 1));
 			
 			entities.push(new Player(10*16-8, (height/16-2)*16));
 			playerIndex = entities.length-1;
@@ -34,7 +35,8 @@ package Areas
 			entities.push(new Wizrobe(width/2-8, height/2-8));
 			entities.push(new Rope(16, 16, 2));
 			entities.push(new Rope(width-32, height-32, 2));
-			enemyCount = 7;
+			entities.push(new LynelTurret(width/2-8, 96));
+			enemyCount = 8;
 			
 			//create items
 			entities.push(new CloudDisappear(13*16, 16));

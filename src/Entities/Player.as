@@ -26,6 +26,10 @@ package Entities
 		
 		[Embed(source = '../resources/images/player_sheet.png')]
 		private var my_sprite_sheet:Class;
+		[Embed(source = '../resources/images/player_easy_sheet.png')]
+		private var my_easy_sheet:Class;
+		[Embed(source = '../resources/images/player_hard_sheet.png')]
+		private var my_hard_sheet:Class;
 		[Embed(source = '../resources/images/player_hurt_sheet.png')]
 		private var hurt_sprite_sheet:Class;
 		[Embed(source = '../resources/images/player_hurt2_sheet.png')]
@@ -45,11 +49,11 @@ package Entities
 			lowHealthBeep = 0;
 		}
 		
-		public function Restart(x:Number, y:Number, facing:int):void
+		public function Restart(x:Number, y:Number):void
 		{
 			this.x = x;
 			this.y = y;
-			this.facing = facing;
+			facing = Global.DOWN;
 			
 			Global.HP = Global.MAX_HP;
 			
@@ -65,7 +69,6 @@ package Entities
 		{
 			if (!visible) return;
 			
-			sprite_sheet = my_sprite_sheet;
 			if (invincibility > 0){
 				if ((invincibility >= 4 && invincibility <= 8) || (invincibility >= 12 && invincibility <= 16) || 
 					(invincibility >= 20 && invincibility <= 24) || (invincibility >= 28 && invincibility <= 32) || 
@@ -183,7 +186,7 @@ package Entities
 					TryToKillProjectile(entities[i]);
 					if (CheckRectIntersect(entities[i], x+lb, y+tb, x+rb, y+bb)
 						&& !entities[i].delete_me){
-							GetHurtByObject(entities[i], entities[i].atkPow);
+							GetHurtByObject(entities[i], entities[i].atkPow, entities[i].invincibility);
 							entities[i].delete_me = true;
 					}
 				}
@@ -214,8 +217,10 @@ package Entities
 			}
 		}
 		
-		override public function GetHurtByObject(object:Mover, dmg:Number = 1):void
+		override public function GetHurtByObject(object:Mover, dmg:Number = 1, invin:int = 0):void
 		{
+			if (state == SPIN_SWORD_ATTACK && invin <= 0 && !(object is Bubble)) return;
+			
 			if (Global.GAME_MODE == Global.EASY) dmg/=2;
 			Global.HP -= dmg;
 			if (Global.HP > 0){
@@ -271,6 +276,10 @@ package Entities
 		
 		override public function UpdateAnimation():void
 		{
+			if (Global.GAME_MODE == Global.EASY) sprite_sheet = my_easy_sheet;
+			else if (Global.GAME_MODE == Global.NORMAL) sprite_sheet = my_sprite_sheet;
+			else if (Global.GAME_MODE == Global.HARD) sprite_sheet = my_hard_sheet;
+			
 			if (facing == Global.UP) currAniY = 2;
 			else if (facing == Global.DOWN) currAniY = 0;
 			else if (facing == Global.LEFT) currAniY = 1;

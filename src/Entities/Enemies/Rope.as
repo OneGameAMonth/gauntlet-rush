@@ -31,6 +31,7 @@ package Entities.Enemies
 			if (currAniX > 0){
 				atkPow = 1;
 				hp = 2;
+				maxHP = 2;
 			}
 			else atkPow = 0.5;
 		}

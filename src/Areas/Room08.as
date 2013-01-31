@@ -30,7 +30,8 @@ package Areas
 			//create portculli
 			entities.push(new Portcullis(6*16, 0, 0));
 			portcullisIndex = entities.length-1;
-			entities.push(new Portcullis(6*16-8, (height/16-1)*16, 1));
+			PortcullisCloud(height-16);
+			entities.push(new Portcullis(6*16, (height/16-1)*16, 1));
 			
 			entities.push(new Player(10*16-8, (height/16-2)*16));
 			playerIndex = entities.length-1;
@@ -38,10 +39,11 @@ package Areas
 			//create enemies
 			entities.push(new Darknut(64, height/2-32));
 			entities.push(new Darknut(width-80, height/2-32));
-			entities.push(new Wizrobe(width/2-8, 32, 6*16, 4*16, 8*16, 6*16));
-			entities.push(new Wizrobe(48, height-64, 6*16, 4*16, 8*16, 6*16));
-			entities.push(new Wizrobe(width-64, height-64, 6*16, 4*16, 8*16, 6*16));
-			enemyCount = 5;
+			entities.push(new Wizrobe(48, height-64, 5*16, 3*16, 10*16, 8*16));
+			entities.push(new Wizrobe(width-64, height-64, 5*16, 3*16, 10*16, 8*16));
+			entities.push(new LynelTurret(32, height-48));
+			entities.push(new LynelTurret(width-48, height-48));
+			enemyCount = 6;
 			
 			entities.push(new StoneStatue(16, 16, 0, 0));
 			entities.push(new StoneStatue(width-32, 16, 0, 1));
@@ -51,7 +53,7 @@ package Areas
 			//create items
 			ReloadHearts();
 			entities.push(new CloudDisappear(13*16, 16));
-			entities.push(new SavePoint(13*16+6, 16+6, 5));
+			entities.push(new SavePoint(13*16+6, 16+6, 7));
 		}
 		
 		override public function ReloadHearts():void
@@ -59,7 +61,13 @@ package Areas
 			entities.push(new CloudDisappear(6*16, 16));
 			if (Global.GAME_MODE != Global.HARD)
 				entities.push(new HeartContainer(6*16+3, 16+3));
-			else entities.push(new Fairy(6*16, 16));
+			else{ 
+				var noFairy:Boolean = true;
+				for (var i:int = 0; i < entities.length; i++){
+					if (entities[i] is Fairy) noFairy = false;
+				}
+				if (noFairy) entities.push(new Fairy(6*16, 16));
+			}
 		}
 	}
 }

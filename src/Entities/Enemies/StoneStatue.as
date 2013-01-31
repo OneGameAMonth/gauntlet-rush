@@ -29,7 +29,6 @@ package Entities.Enemies
 				for (var i:int = 0; i < entities.length; i++){
 					if (entities[i] is Player){
 						entities.push(new Fireball(x, y, entities[i].x, entities[i].y));
-						//SoundManager.getInstance().playSfx("ArrowSound", 0, 1);
 						return;
 					}
 				}

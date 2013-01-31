@@ -31,6 +31,7 @@ package Entities.Enemies
 			topspeed = 3.0;
 			atkPow = 1;
 			hp = 2;
+			maxHP = 2;
 			
 			checkArea = 48;
 			beginChase = 0;
@@ -127,7 +128,7 @@ package Entities.Enemies
 			}
 		}
 		
-		override public function GetHurtByObject(object:Mover, dmg:Number = 1):void
+		override public function GetHurtByObject(object:Mover, dmg:Number = 1, invin:int = 0):void
 		{
 			if (aliveTime <= 0) return;
 			hp -= dmg;

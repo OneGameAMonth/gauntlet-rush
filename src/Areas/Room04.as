@@ -40,6 +40,7 @@ package Areas
 			//create portculli
 			entities.push(new Portcullis(6*16, 0, 0));
 			portcullisIndex = entities.length-1;
+			PortcullisCloud(height-16);
 			entities.push(new Portcullis(6*16, (height/16-1)*16, 1));
 			
 			entities.push(new Player(10*16-8, (height/16-2)*16));
@@ -68,7 +69,12 @@ package Areas
 			entities.push(new CloudDisappear(6*16, 16));
 			if (Global.GAME_MODE != Global.HARD)
 				entities.push(new HeartContainer(6*16+3, 16+3));
-			else entities.push(new Fairy(6*16, 16));
+			else{ 
+				var noFairy:Boolean = true;
+				for (var i:int = 0; i < entities.length; i++){
+					if (entities[i] is Fairy) noFairy = false;
+				}if (noFairy) entities.push(new Fairy(6*16, 16));
+			}
 		}
 	}
 }

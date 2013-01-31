@@ -8,22 +8,28 @@ package
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.geom.Point;
-	import Areas.*;
+	import Screens.*;
 	
 	public class Game 
 	{	
-		public var screenBitmap:Bitmap;
-		public static var Screen:BitmapData;
+		public var bitmap:Bitmap;
+		public static var Renderer:BitmapData;
 		
-		public static var roomArray:Array;
-		public static var roomIndex:int;
-		public static var paused:Boolean;
+		//STATES//
+		public static var stateArray:Array;
+		public static var state:int;
+		public static const START_MENU:int = 0;
+		public static const MAIN_MENU:int = 1;
+		public static const DIFFICULTY_MENU:int = 2;
+		public static const PLAY_GAME:int = 3;
+		public static const PAUSE_SCREEN:int = 4;
+		public static const SCORE_SCREEN:int = 5;
 		
+		//SOUND BUTTON UI
 		public var musicButtonPress:Boolean;
 		public var musicMuted:Boolean;
 		public var soundButtonPress:Boolean;
 		public var soundMuted:Boolean;
-		
 		[Embed(source = 'resources/images/sound_button_sheet.png')]
 		public var sound_button_sheet:Class;
 		protected var image:BitmapData;
@@ -32,30 +38,19 @@ package
 		public function Game() 
 		{
 			trace("Game created");
-			Screen = new BitmapData(Global.stageWidth*Global.zoom, Global.stageHeight*Global.zoom, false, 0x000000);
-			screenBitmap = new Bitmap(Screen);
-			paused = false;
+			Renderer = new BitmapData(Global.stageWidth*Global.zoom, Global.stageHeight*Global.zoom, false, 0x000000);
+			bitmap = new Bitmap(Renderer);
 			
-			Global.GAME_MODE = Global.HARD;
-			Global.MAX_HP = 3;
-			Global.HP = Global.MAX_HP;
-			
-			roomArray = [];
-			roomArray.push(new Room00());
-			roomArray.push(new Room01());
-			roomArray.push(new Room02());
-			roomArray.push(new Room03());
-			roomArray.push(new Room04());
-			roomArray.push(new Room05());
-			roomArray.push(new Room06());
-			roomArray.push(new Room07());
-			roomArray.push(new Room08());
-			roomArray.push(new Room09());
-			roomIndex = 0;
+			stateArray = new Array(5);
+			stateArray[START_MENU] = new StartMenu();
+			stateArray[MAIN_MENU] = new MainMenu();
+			stateArray[SCORE_SCREEN] = new ScoreScreen();
+			stateArray[PLAY_GAME] = new PlayGame();
+			stateArray[PAUSE_SCREEN] = new PauseScreen();
+			state = START_MENU;
 			
 			SoundLoader.LoadSounds();
-			SoundManager.getInstance().playMusic("BattleMusic", -5, int.MAX_VALUE);
-			
+			SoundManager.getInstance().playMusic("IntroMusic", -5, int.MAX_VALUE);
 			musicButtonPress = false;
 			musicMuted = false;
 			soundButtonPress = false;
@@ -66,20 +61,26 @@ package
 		
 		public function Render():void
 		{
-			Screen.lock();
-			roomArray[roomIndex].Render();
+			Renderer.lock();
+			Renderer.fillRect(new Rectangle(0, 0, Renderer.width, Renderer.height), 0x000000);
+			stateArray[state].Render();
 			RenderButtons();
-			Screen.unlock();
+			Renderer.unlock();
 		}
 		
 		public function Update():void
 		{
-			UpdateButtonInput();
-			if (Global.CheckKeyPressed(Global.ENTER) || Global.CheckKeyPressed(Global.ESC)){ 
-				Game.paused = !Game.paused;
-				SoundManager.getInstance().playSfx("SelectSound", 0, 1);
+			UpdateSoundButtonInput();
+			var lastState:int = state;
+			stateArray[state].Update();
+			if (state == SCORE_SCREEN){
+				if (lastState == MAIN_MENU){
+					stateArray[state].state = stateArray[state].RETRIEVE_SCORES;
+					stateArray[state].dataManager.RetrieveScores();
+				}
+				else if (lastState == PLAY_GAME)
+					stateArray[state].state = stateArray[state].ENTER_NAME;
 			}
-			if (!paused) roomArray[roomIndex].Update();
 			
 			//clear out the "keys_up" array for next update
 			Global.keys_up = new Array();
@@ -89,8 +90,7 @@ package
 		/*************************************************************************************/
 		//DRAWING UI AND STUFF
 		/*************************************************************************************/
-		
-		public function UpdateButtonInput():void
+		public function UpdateSoundButtonInput():void
 		{
 			if (Global.mousePressed){
 				//music button
@@ -145,7 +145,7 @@ package
 			var matrix:Matrix = new Matrix();
 			matrix.translate(320-16, 0);
 			matrix.scale(Global.zoom, Global.zoom);
-			Screen.draw(image_sprite, matrix);
+			Renderer.draw(image_sprite, matrix);
 			
 			//Draw the sound button
 			temp_x_offset = 0; temp_y_offset = 0;
@@ -156,7 +156,7 @@ package
 			matrix = new Matrix();
 			matrix.translate(320-32, 0);
 			matrix.scale(Global.zoom, Global.zoom);
-			Screen.draw(image_sprite, matrix);
+			Renderer.draw(image_sprite, matrix);
 		}
 		
 		//

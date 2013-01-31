@@ -8,6 +8,7 @@ package Areas
 	import Entities.Parents.Enemy;
 	import Entities.Parents.Projectile;
 	import Entities.Dialogue.Dialogue;
+	import Screens.PlayGame;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
@@ -26,12 +27,9 @@ package Areas
 		public var width:int;
 		public var height:int;
 		
-		[Embed(source = '../resources/images/heart_hud_sheet.png')]
-		protected var heart_hud_sheet:Class;
 		[Embed(source = '../resources/images/tileset.png')]
 		protected var tile_set:Class;
 		
-		protected var HUD_sprite:Sprite;
 		protected var killDialogue:Boolean;
 		
 		public var map:Array;
@@ -43,7 +41,6 @@ package Areas
 		
 		public function Room(width:int, height:int, id:int)
 		{
-			HUD_sprite = new Sprite();
 			LevelRenderer = new BitmapData(width, height, false, 0x000000);
 			L_bitmap = new Bitmap(LevelRenderer);
 			_id = id;
@@ -74,6 +71,17 @@ package Areas
 			playerIndex = -1;
 		}
 		
+		public function KillAllEnemies():void
+		{
+			for (var i:int = entities.length-1; i >= 0; i--){
+				if (entities[i] is Enemy){
+					entities.splice(i, 1);
+					enemyCount--;
+				}else if (entities[i] is HeartContainer)
+					entities.splice(i, 1);
+			}
+		}
+		
 		public function Render():void
 		{
 			LevelRenderer.lock();
@@ -99,13 +107,6 @@ package Areas
 				dialogue[i].Render(LevelRenderer);
 			}
 			
-			
-			//DRAW HUD
-			for (i = 0; i < HUD_sprite.numChildren;i++){ HUD_sprite.removeChildAt(i); }
-			var temp_image:Bitmap = new Bitmap(new BitmapData(Global.MAX_HP*15, 16));
-			DrawHeartHUD(temp_image, new heart_hud_sheet());
-			LevelRenderer.draw(HUD_sprite);
-			
 			var color:ColorTransform = new ColorTransform();
 			if (Global.HP <= 0){ 
 				color.redOffset = 128;
@@ -115,7 +116,7 @@ package Areas
 			var matrix:Matrix = new Matrix();
 			matrix.translate(L_bitmap.x, L_bitmap.y);
 			matrix.scale(Global.zoom, Global.zoom);
-			Game.Screen.draw(L_bitmap, matrix, color);
+			Game.Renderer.draw(L_bitmap, matrix, color);
 			LevelRenderer.unlock();
 		}
 		
@@ -128,6 +129,7 @@ package Areas
 				entities.push(new ToNextRoom(
 					entities[portcullisIndex].x, entities[portcullisIndex].y-16));
 				entities.splice(portcullisIndex, 1);
+				PortcullisCloud();
 				portcullisIndex = -1;
 			}
 			
@@ -142,6 +144,7 @@ package Areas
 				}
 				if (entities[i].delete_me){
 					if (entities[i] is Enemy){
+						Global.currScore += (entities[i].maxHP+entities[i].atkPow)*100*(1+Global.GAME_MODE);
 						entities.push(new EnemyDie(entities[i].x, entities[i].y, false));
 						enemyCount--;
 					}else if (entities[i] is Projectile){
@@ -156,12 +159,24 @@ package Areas
 			}for (i = 0; i < entities.length; i++){ if (entities[i] is Player) playerIndex = i; }
 			
 			if (playerIndex >= 0) UpdateView(entities[playerIndex]);
-			if (Global.HP <= 0){ 
+			if (Global.HP <= 0){
 				if (playerIndex >= 0){ 
 					entities[playerIndex].StopAll();
 				}
 				ReloadSaveGame();
 			}
+		}
+		
+		public function PortcullisCloud(h:int = 0):void
+		{
+			entities.push(new CloudDisappear(6*16, h, true, 0));
+			entities.push(new CloudDisappear(7*16, h, true, 0));
+			entities.push(new CloudDisappear(8*16, h, true, 0));
+			entities.push(new CloudDisappear(9*16, h, true, 0));
+			entities.push(new CloudDisappear(10*16, h, true, 0));
+			entities.push(new CloudDisappear(11*16, h, true, 0));
+			entities.push(new CloudDisappear(12*16, h, true, 0));
+			entities.push(new CloudDisappear(13*16, h, true, 0));
 		}
 		
 		public function Restart():void
@@ -174,10 +189,13 @@ package Areas
 		}
 		
 		public function ReloadSaveGame():void
-		{		
+		{	
 			Global.DeathTimer--;
-			if (Global.DeathTimer == Global.DeathTimerLimit-1 && playerIndex >= 0) 
+			if (Global.DeathTimer == Global.DeathTimerLimit-1 && playerIndex >= 0){
 				entities[playerIndex].facing = Global.DOWN;
+				Global.currScore -= 1000;
+				if (Global.currScore <= 0) Global.currScore = 0;
+			}
 			else if (Global.DeathTimer%10==0 && Global.DeathTimer >= 40){
 				if (playerIndex >= 0){ 
 					entities[playerIndex].NextFacing();
@@ -187,18 +205,7 @@ package Areas
 			}
 			
 			if (Global.DeathTimer <= 0){
-				Game.roomIndex = Save.ROOM_INDEX;
-				Global.MAX_HP = Save.MAX_HP;
-				Global.HP = Save.HP;
-				
-				var pIndex:int = Game.roomArray[Game.roomIndex].playerIndex;
-				Game.roomArray[Game.roomIndex].entities[pIndex].Restart(Save.PLAYER_X, Save.PLAYER_Y, Global.UP);
-				for (var i:int = Game.roomIndex+1; i < Game.roomArray.length; i++){
-					Game.roomArray[i].Restart();
-				}
-				if (Save.MAX_HP < Save.POSSIBLE_MAX_HP){
-					Game.roomArray[Game.roomIndex].ReloadHearts();
-				}
+				PlayGame.RestartGame();
 				Global.DeathTimer = Global.DeathTimerLimit;
 			}
 		}
@@ -330,19 +337,5 @@ package Areas
 			if (L_bitmap.y > hudHeight) L_bitmap.y = hudHeight;
 		}
 		
-		public function DrawHeartHUD(temp_image:Bitmap, temp_sheet:Bitmap):void
-		{			
-			for (var i:int = 0; i < Global.MAX_HP; i++){
-				var sprite_x:int = 0;
-				if (Global.HP <= i+0.5 && Global.HP > i) sprite_x = 1*15;
-				else if (Global.HP < i+0.5) sprite_x = 2*15;
-				temp_image.bitmapData.copyPixels(temp_sheet.bitmapData,
-					new Rectangle(sprite_x, 0, 15, 16), 
-					new Point(i*15,0)
-				);
-			}
-			
-			HUD_sprite.addChild(temp_image);
-		}
 	}
 }

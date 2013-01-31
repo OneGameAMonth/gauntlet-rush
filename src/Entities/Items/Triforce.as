@@ -26,6 +26,7 @@ package Entities.Items
 			for(var i:int = 0; i < entities.length; i++){
 				if (entities[i] is Player){
 					if (CheckRectIntersect(entities[i], x, y, x+rb, y+bb)){
+						Global.HP = Global.MAX_HP;
 						SoundManager.getInstance().playSfx("GetItemSound", 0, 1);
 						delete_me = true;
 					}

@@ -30,6 +30,13 @@ package Areas
 			}
 		}
 		
+		override public function Restart():void
+		{
+			CreateEntities();
+			entities.push(new ZeldaIntro(width/2-8, height/2-64));
+			entities.push(new ZeldaIntroDialogue());
+		}
+		
 		override public function CreateEntities():void
 		{
 			super.CreateEntities();
@@ -54,7 +61,12 @@ package Areas
 			entities.push(new CloudDisappear(6*16, 16));
 			if (Global.GAME_MODE != Global.HARD)
 				entities.push(new HeartContainer(6*16+3, 16+3));
-			else entities.push(new Fairy(6*16, 16));
+			else{ 
+				var noFairy:Boolean = true;
+				for (var i:int = 0; i < entities.length; i++){
+					if (entities[i] is Fairy) noFairy = false;
+				}if (noFairy) entities.push(new Fairy(6*16, 16));
+			}
 		}
 		
 		override public function Update():void

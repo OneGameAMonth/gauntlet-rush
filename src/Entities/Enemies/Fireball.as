@@ -10,7 +10,6 @@ package Entities.Enemies
 	{
 		[Embed(source = '../../resources/images/fireball_sheet.png')]
 		private var my_sprite_sheet:Class;
-		private var invincibility:int;
 		private var scale:int;
 		
 		public function Fireball(x:Number, y:Number, px:Number, py:Number, scale:int = 1)

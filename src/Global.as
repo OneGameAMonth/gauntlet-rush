@@ -12,6 +12,8 @@ package
 		public static var MAX_HP:Number;
 		public static var DeathTimerLimit:int = 80;
 		public static var DeathTimer:int = 80;
+		public static var currScore:int = 0;
+		public static var highScore:int = 0;
 		
 		public static var GAME_MODE:int;
 		public static const EASY:int = 0;

@@ -10,7 +10,7 @@ package Entities.Items
 		
 		public var timer:int;
 		
-		public function CloudDisappear(x:int, y:int, visible:Boolean = false) 
+		public function CloudDisappear(x:int, y:int, visible:Boolean = false, timer:int = 5)
 		{
 			super(x, y, 0, 0, 16, 16);
 			sprite_sheet = my_sprite_sheet;
@@ -20,7 +20,7 @@ package Entities.Items
 			frameDelay = 3;
 			
 			this.visible = visible;
-			timer = 5;
+			this.timer = timer;
 		}
 		
 		override public function Update(entities:Array, map:Array):void

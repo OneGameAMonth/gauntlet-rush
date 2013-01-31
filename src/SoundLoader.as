@@ -50,18 +50,21 @@ package
 		private static var SpawnEnemy_sound:Class;
 		[Embed(source = 'resources/sounds/LOZ_Sword_Shoot.mp3')]
 		private static var SwordShoot_sound:Class;
-		[Embed(source = 'resources/sounds/LOZ_Arrow.mp3')]
-		private static var Arrow_sound:Class;
+		
 		[Embed(source = 'resources/sounds/music/01-intro.mp3')]
 		private static var Intro_music:Class;
-		[Embed(source = 'resources/sounds/music/02-overworld.mp3')]
-		private static var Overworld_music:Class;
 		[Embed(source = 'resources/sounds/music/03-battle.mp3')]
 		private static var Battle_music:Class;
 		[Embed(source = 'resources/sounds/music/04-labyrinth.mp3')]
 		private static var Labyrinth_music:Class;
 		[Embed(source = 'resources/sounds/music/10-ending.mp3')]
 		private static var Ending_music:Class;
+		[Embed(source = 'resources/sounds/music/09-deathmountain.mp3')]
+		private static var DeathMountain_music:Class;
+		[Embed(source = 'resources/sounds/music/26-minibossbattle.mp3')]
+		private static var Miniboss_music:Class;
+		[Embed(source = 'resources/sounds/music/27-bossbattle.mp3')]
+		private static var Boss_music:Class;
 		
 		public function SoundLoader() 
 		{}
@@ -93,13 +96,14 @@ package
 			SoundManager.getInstance().addSfx(new GetHeart_sound(), "GetHeartSound");
 			SoundManager.getInstance().addSfx(new SpawnEnemy_sound(), "SpawnEnemySound");
 			SoundManager.getInstance().addSfx(new SwordShoot_sound(), "SwordShootSound");
-			SoundManager.getInstance().addSfx(new Arrow_sound(), "ArrowSound");
 			
 			SoundManager.getInstance().addMusic(new Intro_music(), "IntroMusic");
-			SoundManager.getInstance().addMusic(new Overworld_music(), "OverworldMusic");
 			SoundManager.getInstance().addMusic(new Battle_music(), "BattleMusic");
 			SoundManager.getInstance().addMusic(new Labyrinth_music(), "LabyrinthMusic");
 			SoundManager.getInstance().addMusic(new Ending_music(), "EndingMusic");
+			SoundManager.getInstance().addMusic(new DeathMountain_music(), "DeathMountainMusic");
+			SoundManager.getInstance().addMusic(new Miniboss_music(), "MinibossMusic");
+			SoundManager.getInstance().addMusic(new Boss_music(), "BossMusic");
 		}
 	}
 }

@@ -2,6 +2,7 @@ package Entities.Items
 {
 	import Entities.Parents.GameObject;
 	import Entities.Player;
+	import Screens.PlayGame;
 	
 	public class ToNextRoom extends GameObject
 	{
@@ -17,7 +18,8 @@ package Entities.Items
 			for (var i:int = 0; i < entities.length; i++){
 				if (entities[i] is Player 
 					&& CheckRectIntersect(entities[i], x, y, x+rb, y+bb)){
-					Game.roomIndex++;
+					PlayGame.roomIndex++;
+					SoundManager.getInstance().playSfx("UnlockSound", 0, 1);
 				}
 			}
 		}	

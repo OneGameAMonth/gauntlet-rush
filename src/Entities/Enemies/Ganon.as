@@ -33,6 +33,7 @@ package Entities.Enemies
 			frameDelay = 15;
 			topspeed = 2.5;
 			hp = 9;
+			maxHP = 9;
 			atkPow = 2;
 			moveTimer = 26;
 			stopCounter == 0;
@@ -93,13 +94,14 @@ package Entities.Enemies
 					if (entities[i] is Player){
 						SoundManager.getInstance().playSfx("BombBlowSound", 0, 1);
 						entities.push(new Fireball(x+16, y+16, entities[i].x, entities[i].y, 2));
+						moveTimer = 16;
 						return;
 					}
 				}
 			}
 		}
 		
-		override public function GetHurtByObject(object:Mover, dmg:Number = 1):void
+		override public function GetHurtByObject(object:Mover, dmg:Number = 1, invin:int = 0):void
 		{
 			hp -= 1;
 			if (hp > 0){
